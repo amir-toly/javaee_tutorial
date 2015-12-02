@@ -14,6 +14,11 @@ public class Test extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
+		String paramAuthor = "URL request parameter added from the servlet: " + req.getParameter("author") + ".";
+		String message = "Variables transmission: OK ! " + paramAuthor;
+		
+		req.setAttribute("test", message);
+		
 		this.getServletContext().getRequestDispatcher("/WEB-INF/test.jsp").forward(req, resp);
 	}
 

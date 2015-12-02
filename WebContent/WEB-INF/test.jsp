@@ -8,5 +8,14 @@
 	
 	<body>
 		<p>This is a page generated from a JSP.</p>
+		<p>
+			<%
+			String attribute = (String) request.getAttribute("test");
+			out.println(attribute);
+			
+			String parameter = request.getParameter("author");
+			out.println("URL request parameter from inside the JSP: " + parameter);
+			%>
+		</p>
 	</body>
 </html>
