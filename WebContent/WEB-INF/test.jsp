@@ -17,5 +17,13 @@
 			out.println("URL request parameter from inside the JSP: " + parameter);
 			%>
 		</p>
+		<p>
+			Get bean:
+			<%
+			com.sdzee.beans.Coyote ourBean = (com.sdzee.beans.Coyote) request.getAttribute("coyote");
+			out.println(ourBean.getFirstName());
+			out.println(ourBean.getLastName());
+			%>
+		</p>
 	</body>
 </html>
