@@ -9,17 +9,13 @@
 	<body>
 		<p>This is a page generated from a JSP.</p>
 		<p>
-			<% String attribute = (String) request.getAttribute("test"); %>
-			<%= attribute %>
-			
-			<% String parameter = request.getParameter("author"); %>
-			<%= "URL request parameter from inside the JSP: " + parameter %>
+			${ requestScope.test }
+			URL request parameter from inside the JSP: ${ param.author }
 		</p>
 		<p>
 			Get bean:
-			<jsp:useBean id="coyote" class="com.sdzee.beans.Coyote" scope="request" />
-			<jsp:getProperty name="coyote" property="firstName" />
-			<jsp:getProperty name="coyote" property="lastName" />
+			${ requestScope.coyote.firstName }
+			${ requestScope.coyote.lastName }
 		</p>
 	</body>
 </html>
