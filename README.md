@@ -7,5 +7,5 @@ Tools:
 Steps:
 - Import from Git > Projects from Git as a Dynamic Web Project to deploy in Tomcat
 - Run the project on Tomcat
-- Go on http://localhost:8080/<PROJECT_NAME>/test.html
-- Go on http://localhost:8080/<PROJECT_NAME>/test?author=parameterFromURL
+- Go on http://localhost:8080/<PROJECT_NAME>/createCustomer.jsp
+- Go on http://localhost:8080/<PROJECT_NAME>/createOrder.jsp
