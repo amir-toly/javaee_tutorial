@@ -1,4 +1,5 @@
 <%@ page pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -8,47 +9,52 @@
 	</head>
 	
 	<body>
+		<%@ include file="inc/menu.jsp" %>
+		
 		<div class="info">
 			${ requestScope.msg }
 		</div>
-		<p>
-			Customer
-			<br />
-			Last name:
-			${ requestScope.order.customer.lastName }
-			<br />
-			First name:
-			${ requestScope.order.customer.firstName }
-			<br />
-			Address:
-			${ requestScope.order.customer.address }
-			<br />
-			Phone number:
-			${ requestScope.order.customer.phoneNumber }
-			<br />
-			Email:
-			${ requestScope.order.customer.email }
-		</p>
-		<p>
-			Order
-			<br />
-			Date:
-			${ requestScope.order.date }
-			<br />
-			Amount:
-			${ requestScope.order.amount }
-			<br />
-			Payment method:
-			${ requestScope.order.paymentMethod }
-			<br />
-			Payment status:
-			${ requestScope.order.paymentStatus }
-			<br />
-			Shipping mode:
-			${ requestScope.order.shippingMode }
-			<br />
-			Delivery status:
-			${ requestScope.order.deliveryStatus }
-		</p>
+		
+		<c:if test="${ requestScope.msg == 'Order created successfully!' }">
+			<p>
+				Customer
+				<br />
+				Last name:
+				<c:out value="${ requestScope.order.customer.lastName }" />
+				<br />
+				First name:
+				<c:out value="${ requestScope.order.customer.firstName }" />
+				<br />
+				Address:
+				<c:out value="${ requestScope.order.customer.address }" />
+				<br />
+				Phone number:
+				<c:out value="${ requestScope.order.customer.phoneNumber }" />
+				<br />
+				Email:
+				<c:out value="${ requestScope.order.customer.email }" />
+			</p>
+			<p>
+				Order
+				<br />
+				Date:
+				<c:out value="${ requestScope.order.date }" />
+				<br />
+				Amount:
+				<c:out value="${ requestScope.order.amount }" />
+				<br />
+				Payment method:
+				<c:out value="${ requestScope.order.paymentMethod }" />
+				<br />
+				Payment status:
+				<c:out value="${ requestScope.order.paymentStatus }" />
+				<br />
+				Shipping mode:
+				<c:out value="${ requestScope.order.shippingMode }" />
+				<br />
+				Delivery status:
+				<c:out value="${ requestScope.order.deliveryStatus }" />
+			</p>
+		</c:if>
 	</body>
 </html>

@@ -10,6 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 import com.sdzee.beans.Customer;
 
 public class CustomerController extends HttpServlet {
+	
+	public static final String PARAM_LAST_NAME = "customerLastName";
+	public static final String PARAM_FIRST_NAME = "customerFirstName";
+	public static final String PARAM_ADDRESS = "customerAddress";
+	public static final String PARAM_PHONE_NUMBER = "customerPhoneNumber";
+	public static final String PARAM_EMAIL_ADDRESS = "customerEmailAddress";
+	
+	public static final String ATT_MSG = "msg";
+	public static final String ATT_CUSTOMER = "customer";
+	
+	public static final String VIEW = "/displayCustomer.jsp";
 
 	private static final long serialVersionUID = 3957764416980367802L;
 
@@ -21,11 +32,11 @@ public class CustomerController extends HttpServlet {
 		/* Create bean */
 		Customer customer = new Customer();
 		/* Initialize properties */
-		customer.setLastName(req.getParameter("customerLastName"));
-		customer.setFirstName(req.getParameter("customerFirstName"));
-		customer.setAddress(req.getParameter("customerAddress"));
-		customer.setPhoneNumber(req.getParameter("customerPhoneNumber"));
-		customer.setEmail(req.getParameter("customerEmailAddress"));
+		customer.setLastName(req.getParameter(PARAM_LAST_NAME));
+		customer.setFirstName(req.getParameter(PARAM_FIRST_NAME));
+		customer.setAddress(req.getParameter(PARAM_ADDRESS));
+		customer.setPhoneNumber(req.getParameter(PARAM_PHONE_NUMBER));
+		customer.setEmail(req.getParameter(PARAM_EMAIL_ADDRESS));
 		
 		/* Validate fields */
 		if (
@@ -41,11 +52,11 @@ public class CustomerController extends HttpServlet {
 		}
 		
 		/* Save bean and message in req object */
-		req.setAttribute("msg", msg);
-		req.setAttribute("customer", customer);
+		req.setAttribute(ATT_MSG, msg);
+		req.setAttribute(ATT_CUSTOMER, customer);
 		
 		/* Transmit req/resp to JSP */
-		this.getServletContext().getRequestDispatcher("/displayCustomer.jsp").forward(req, resp);
+		this.getServletContext().getRequestDispatcher(VIEW).forward(req, resp);
 	}
 	
 	/**
