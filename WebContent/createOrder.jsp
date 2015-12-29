@@ -1,16 +1,17 @@
 <%@ page pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8" />
 		<title>Order creation</title>
-		<link type="text/css" rel="stylesheet" href="inc/style.css" />
+		<link type="text/css" rel="stylesheet" href='<c:url value="/inc/style.css" />' />
 	</head>
 	<body>
-		<%@ include file="inc/menu.jsp" %>
+		<c:import url="/inc/menu.jsp" />
 		<div>
-			<form method="get" action="createOrder">
-				<c:import url="inc/inc_customer_form.jsp" />
+			<form method="get" action='<c:url value="/createOrder" />'>
+				<c:import url="/inc/inc_customer_form.jsp" />
 				
 				<fieldset>
 					<legend>Order details</legend>

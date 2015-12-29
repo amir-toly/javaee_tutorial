@@ -5,33 +5,39 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Customer summary</title>
-		<link type="text/css" rel="stylesheet" href="inc/style.css" />
+		<link type="text/css" rel="stylesheet" href='<c:url value="/inc/style.css" />' />
 	</head>
 	
 	<body>
-		<%@ include file="inc/menu.jsp" %>
+		<c:import url="/inc/menu.jsp" />
 		
-		<div class="info">
+		<div id="content">
+		<p class="info">
 			${ requestScope.msg }
-		</div>
+		</p>
 		
-		<c:if test="${ requestScope.msg == 'Customer created successfully!' }">
+		<c:if test="${ !requestScope.error }">
 			<p>
 				Last name:
 				<c:out value="${ requestScope.customer.lastName }" />
-				<br />
+			</p>
+			<p>
 				First name:
 				<c:out value="${ requestScope.customer.firstName }" />
-				<br />
+			</p>
+			<p>
 				Address:
 				<c:out value="${ requestScope.customer.address }" />
-				<br />
+			</p>
+			<p>
 				Phone number:
 				<c:out value="${ requestScope.customer.phoneNumber }" />
-				<br />
+			</p>
+			<p>
 				Email:
 				<c:out value="${ requestScope.customer.email }" />
 			</p>
 		</c:if>
+		</div>
 	</body>
 </html>

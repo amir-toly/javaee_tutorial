@@ -5,56 +5,69 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Order summary</title>
-		<link type="text/css" rel="stylesheet" href="inc/style.css" />
+		<link type="text/css" rel="stylesheet" href='<c:url value="/inc/style.css" />' />
 	</head>
 	
 	<body>
-		<%@ include file="inc/menu.jsp" %>
+		<c:import url="/inc/menu.jsp" />
 		
-		<div class="info">
+		<div id="content">
+		<p class="info">
 			${ requestScope.msg }
-		</div>
+		</p>
 		
-		<c:if test="${ requestScope.msg == 'Order created successfully!' }">
+		<c:if test="${ !requestScope.error }">
 			<p>
 				Customer
-				<br />
+			</p>
+			<p>
 				Last name:
 				<c:out value="${ requestScope.order.customer.lastName }" />
-				<br />
+			</p>
+			<p>
 				First name:
 				<c:out value="${ requestScope.order.customer.firstName }" />
-				<br />
+			</p>
+			<p>
 				Address:
 				<c:out value="${ requestScope.order.customer.address }" />
-				<br />
+			</p>
+			<p>
 				Phone number:
 				<c:out value="${ requestScope.order.customer.phoneNumber }" />
-				<br />
+			</p>
+			<p>
 				Email:
 				<c:out value="${ requestScope.order.customer.email }" />
 			</p>
 			<p>
 				Order
-				<br />
+			</p>
+			<p>
 				Date:
 				<c:out value="${ requestScope.order.date }" />
-				<br />
+			</p>
+			<p>
 				Amount:
 				<c:out value="${ requestScope.order.amount }" />
-				<br />
+			</p>
+			<p>
 				Payment method:
 				<c:out value="${ requestScope.order.paymentMethod }" />
-				<br />
+			</p>
+			<p>
 				Payment status:
 				<c:out value="${ requestScope.order.paymentStatus }" />
-				<br />
+			</p>
+			<p>
 				Shipping mode:
 				<c:out value="${ requestScope.order.shippingMode }" />
-				<br />
+			</p>
+			<p>
 				Delivery status:
 				<c:out value="${ requestScope.order.deliveryStatus }" />
 			</p>
 		</c:if>
+		</div>
 	</body>
 </html>

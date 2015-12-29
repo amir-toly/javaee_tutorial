@@ -19,6 +19,7 @@ public class CustomerController extends HttpServlet {
 	
 	public static final String ATT_MSG = "msg";
 	public static final String ATT_CUSTOMER = "customer";
+	public static final String ATT_ERROR = "error";
 	
 	public static final String VIEW = "/displayCustomer.jsp";
 
@@ -28,6 +29,7 @@ public class CustomerController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		String msg = "Customer created successfully!";
+		boolean error = false;
 		
 		/* Create bean */
 		Customer customer = new Customer();
@@ -49,11 +51,13 @@ public class CustomerController extends HttpServlet {
 					"Error - Required fields are missing. " + "<br />" +
 					"<a href='createCustomer.jsp'>Click here</a> " +
 					"to try again.";
+			error = true;
 		}
 		
-		/* Save bean and message in req object */
+		/* Save bean, message and boolean in req object */
 		req.setAttribute(ATT_MSG, msg);
 		req.setAttribute(ATT_CUSTOMER, customer);
+		req.setAttribute(ATT_ERROR, error);
 		
 		/* Transmit req/resp to JSP */
 		this.getServletContext().getRequestDispatcher(VIEW).forward(req, resp);

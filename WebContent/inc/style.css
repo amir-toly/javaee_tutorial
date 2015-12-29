@@ -1,14 +1,10 @@
-/* General --------------------------------------------------------- ---------------------------- */
+/* General ------------------------------------------------------------------------------------- */
 body, p, legend, label, input {
 	font: normal 8pt verdana, helvetica, sans-serif;
 }
 
-p {
-	margin: 10px;
-}
-
-/* Forms ----------------------------------------------------------- ---------------------------- */
-fieldset, .menuBox {
+/* Forms --------------------------------------------------------------------------------------- */
+fieldset {
 	padding: 10px;
 	border: 1px #0568CD solid;
 	margin: 10px;
@@ -34,7 +30,7 @@ form input.withoutLabel {
 	margin-left: 200px;
 }
 
-/* Styles and colors ---------------------------------------------- ---------------------------- */
+/* Styles and colors --------------------------------------------------------------------------- */
 .required {
 	color: #c00;
 }
@@ -50,9 +46,15 @@ form input.withoutLabel {
 .info {
 	font-style: italic;
 	color: #E8A22B;
+}
+
+/* Building blocks ----------------------------------------------------------------------------- */
+div#menu {
+	border: 1px solid #0568CD;
+	padding: 10px;
 	margin: 10px;
 }
 
-.menuBox {
-	list-style: none;
+div#content {
+	margin: 10px;
 }
