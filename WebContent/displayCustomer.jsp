@@ -12,32 +12,32 @@
 		<c:import url="/inc/menu.jsp" />
 		
 		<div id="content">
-		<p class="info">
-			${ requestScope.msg }
-		</p>
-		
-		<c:if test="${ !requestScope.error }">
-			<p>
-				Last name:
-				<c:out value="${ requestScope.customer.lastName }" />
+			<p class="info">
+				${ requestScope.msg }
 			</p>
-			<p>
-				First name:
-				<c:out value="${ requestScope.customer.firstName }" />
-			</p>
-			<p>
-				Address:
-				<c:out value="${ requestScope.customer.address }" />
-			</p>
-			<p>
-				Phone number:
-				<c:out value="${ requestScope.customer.phoneNumber }" />
-			</p>
-			<p>
-				Email:
-				<c:out value="${ requestScope.customer.email }" />
-			</p>
-		</c:if>
+			
+			<c:if test="${ !requestScope.error }">
+				<p>
+					Last name:
+					<c:out value="${ requestScope.customer.lastName }" />
+				</p>
+				<p>
+					First name:
+					<c:out value="${ requestScope.customer.firstName }" />
+				</p>
+				<p>
+					Address:
+					<c:out value="${ requestScope.customer.address }" />
+				</p>
+				<p>
+					Phone number:
+					<c:out value="${ requestScope.customer.phoneNumber }" />
+				</p>
+				<p>
+					Email:
+					<c:out value="${ requestScope.customer.email }" />
+				</p>
+			</c:if>
 		</div>
 	</body>
 </html>
