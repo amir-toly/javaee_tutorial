@@ -10,8 +10,10 @@
 	<body>
 		<c:import url="/inc/menu.jsp" />
 		<div>
-			<form method="get" action='<c:url value="/createCustomer" />'>
+			<form method="post" action='<c:url value="/createCustomer" />'>
 				<c:import url="/inc/inc_customer_form.jsp" />
+				
+				<p class="info">${ requestScope.form.result }</p>
 				
 				<input type="submit" value="Create" />
 				<input type="reset" value="Reset" /> <br />

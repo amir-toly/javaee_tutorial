@@ -8,69 +8,46 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.sdzee.beans.Customer;
+import com.sdzee.forms.CustomerForm;
 
 public class CustomerController extends HttpServlet {
 	
-	public static final String PARAM_LAST_NAME = "customerLastName";
-	public static final String PARAM_FIRST_NAME = "customerFirstName";
-	public static final String PARAM_ADDRESS = "customerAddress";
-	public static final String PARAM_PHONE_NUMBER = "customerPhoneNumber";
-	public static final String PARAM_EMAIL_ADDRESS = "customerEmailAddress";
-	
-	public static final String ATT_MSG = "msg";
+	public static final String ATT_FORM = "form";
 	public static final String ATT_CUSTOMER = "customer";
-	public static final String ATT_ERROR = "error";
 	
-	public static final String VIEW = "/displayCustomer.jsp";
+	public static final String VIEW_FORM = "/WEB-INF/createCustomer.jsp";
+	public static final String VIEW_RESULT = "/WEB-INF/displayCustomer.jsp";
 
 	private static final long serialVersionUID = 3957764416980367802L;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		String msg = "Customer created successfully!";
-		boolean error = false;
-		
-		/* Create bean */
-		Customer customer = new Customer();
-		/* Initialize properties */
-		customer.setLastName(req.getParameter(PARAM_LAST_NAME));
-		customer.setFirstName(req.getParameter(PARAM_FIRST_NAME));
-		customer.setAddress(req.getParameter(PARAM_ADDRESS));
-		customer.setPhoneNumber(req.getParameter(PARAM_PHONE_NUMBER));
-		customer.setEmail(req.getParameter(PARAM_EMAIL_ADDRESS));
-		
-		/* Validate fields */
-		if (
-				isBlank(customer.getLastName()) ||
-				isBlank(customer.getAddress()) ||
-				isBlank(customer.getPhoneNumber())
-		)
-		{
-			msg =
-					"Error - Required fields are missing. " + "<br />" +
-					"<a href='createCustomer.jsp'>Click here</a> " +
-					"to try again.";
-			error = true;
-		}
-		
-		/* Save bean, message and boolean in req object */
-		req.setAttribute(ATT_MSG, msg);
-		req.setAttribute(ATT_CUSTOMER, customer);
-		req.setAttribute(ATT_ERROR, error);
-		
-		/* Transmit req/resp to JSP */
-		this.getServletContext().getRequestDispatcher(VIEW).forward(req, resp);
+		/* Display customer creation page */
+		this.getServletContext().getRequestDispatcher(VIEW_FORM).forward(req, resp);
 	}
 	
-	/**
-	 * isBlank
-	 * @param stringToCheck
-	 * @return boolean
-	 */
-	private boolean isBlank(String stringToCheck) {
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		return stringToCheck == null || stringToCheck.trim().isEmpty();
+		/* Create form */
+		CustomerForm form = new CustomerForm();
+		
+		/* Retrieve bean from form processing */
+		Customer customer = form.createCustomer(req);
+		
+		/* Save bean and form in req object */
+		req.setAttribute(ATT_FORM, form);
+		req.setAttribute(ATT_CUSTOMER, customer);
+		
+		/* Transmit req/resp to JSP */
+		if (form.getErrors().isEmpty())
+		{
+			this.getServletContext().getRequestDispatcher(VIEW_RESULT).forward(req, resp);
+		}
+		else {
+			this.getServletContext().getRequestDispatcher(VIEW_FORM).forward(req, resp);
+		}
 	}
 
 }

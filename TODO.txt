@@ -1,0 +1,1 @@
+When there is an error on amount field, display back the wrong content instead of 0.0
