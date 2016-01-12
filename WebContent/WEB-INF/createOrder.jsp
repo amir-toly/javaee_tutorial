@@ -7,11 +7,19 @@
 		<title>Order creation</title>
 		<link type="text/css" rel="stylesheet" href='<c:url value="/inc/style.css" />' />
 	</head>
+	
 	<body>
 		<c:import url="/inc/menu.jsp" />
+		
 		<div>
 			<form method="post" action='<c:url value="/createOrder" />'>
-				<c:import url="/inc/inc_customer_form.jsp" />
+				<c:set var="customer" value="${ requestScope.order.customer }" scope="request" />
+				
+				<fieldset>
+					<legend>Customer details</legend>
+					
+					<c:import url="/inc/inc_customer_form.jsp" />
+				</fieldset>
 				
 				<fieldset>
 					<legend>Order details</legend>

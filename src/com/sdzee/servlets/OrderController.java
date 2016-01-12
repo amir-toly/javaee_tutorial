@@ -13,7 +13,6 @@ import com.sdzee.forms.OrderForm;
 public class OrderController extends HttpServlet {
 	
 	public static final String ATT_FORM = "form";
-	public static final String ATT_CUSTOMER = "customer";
 	public static final String ATT_ORDER = "order";
 	
 	public static final String VIEW_FORM = "/WEB-INF/createOrder.jsp";
@@ -37,9 +36,8 @@ public class OrderController extends HttpServlet {
 		/* Retrieve bean from form processing */
 		Order order = form.createOrder(req);
 		
-		/* Save beans and form in req object */
+		/* Save bean and form in req object */
 		req.setAttribute(ATT_FORM, form);
-		req.setAttribute(ATT_CUSTOMER, order.getCustomer());
 		req.setAttribute(ATT_ORDER, order);
 		
 		/* Transmit req/resp to JSP */

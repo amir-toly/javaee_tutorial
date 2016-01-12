@@ -7,11 +7,17 @@
 		<title>Customer creation</title>
 		<link type="text/css" rel="stylesheet" href='<c:url value="/inc/style.css" />' />
 	</head>
+	
 	<body>
 		<c:import url="/inc/menu.jsp" />
+		
 		<div>
 			<form method="post" action='<c:url value="/createCustomer" />'>
-				<c:import url="/inc/inc_customer_form.jsp" />
+				<fieldset>
+					<legend>Customer details</legend>
+					
+					<c:import url="/inc/inc_customer_form.jsp" />
+				</fieldset>
 				
 				<p class="info">${ requestScope.form.result }</p>
 				
