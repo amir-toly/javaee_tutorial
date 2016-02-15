@@ -18,7 +18,38 @@
 				<fieldset>
 					<legend>Customer details</legend>
 					
-					<c:import url="/inc/inc_customer_form.jsp" />
+					<div class="labelFormForRadio">New customer? <span class="required">*</span></div>
+					<input
+						type="radio" name="newCustomer" value="yes" id="yes" onclick="toggle('newCustomer', 'existingCustomer')"
+						<c:if test='${ requestScope.form.yesChecked }'>checked</c:if>
+					/>
+					<label class="radioLabel" for="yes">Yes</label>
+					<input
+						type="radio" name="newCustomer" value="no" id="no" onclick="toggle('existingCustomer', 'newCustomer')"
+						<c:if test='${ requestScope.form.noChecked }'>checked</c:if>
+					/>
+					<label class="radioLabel" for="no">No</label>
+					<span class="error">${ requestScope.form.errors['newCustomer'] }</span>
+					<br class="stopFloat" />
+					<br/>
+					
+					<div id="existingCustomer" <c:if test='${ !requestScope.form.noChecked }'>class="hidden"</c:if>>
+						<select name="customerIdx">
+							<option>Select a customer:</option>
+							
+							<c:forEach items="${ sessionScope.customers }" var="customer" varStatus="customerStatus">
+								<option <c:if test='${ requestScope.form.customerIdx == customerStatus.index }'>selected</c:if> value="${ customerStatus.index }">
+									${ customer.firstName } ${ customer.lastName }
+								</option>
+							</c:forEach>
+						</select>
+						
+						<span class="error">${ requestScope.form.errors['customerIdx'] }</span>
+					</div>
+					
+					<div id="newCustomer" <c:if test='${ !requestScope.form.yesChecked }'>class="hidden"</c:if>>
+						<c:import url="/inc/inc_customer_form.jsp" />
+					</div>
 				</fieldset>
 				
 				<fieldset>
@@ -61,5 +92,7 @@
 				<input type="reset" value="Reset" /> <br />
 			</form>
 		</div>
+		
+		<script src="<c:url value="/inc/createOrder.js" />"></script>
 	</body>
 </html>

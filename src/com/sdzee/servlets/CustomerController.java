@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.sdzee.beans.Customer;
 import com.sdzee.forms.CustomerForm;
+import com.sdzee.servlets.util.AvoidDuplication;
 
 public class CustomerController extends HttpServlet {
 	
@@ -43,6 +44,8 @@ public class CustomerController extends HttpServlet {
 		/* Transmit req/resp to JSP */
 		if (form.getErrors().isEmpty())
 		{
+			AvoidDuplication.saveCustomerInSession(customer, req);
+			
 			this.getServletContext().getRequestDispatcher(VIEW_RESULT).forward(req, resp);
 		}
 		else {

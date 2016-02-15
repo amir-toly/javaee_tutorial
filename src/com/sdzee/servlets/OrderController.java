@@ -1,19 +1,24 @@
 package com.sdzee.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.sdzee.beans.Order;
 import com.sdzee.forms.OrderForm;
+import com.sdzee.servlets.util.AvoidDuplication;
 
 public class OrderController extends HttpServlet {
 	
 	public static final String ATT_FORM = "form";
 	public static final String ATT_ORDER = "order";
+	private static final String SESS_ATT_ORDERS = "orders";
 	
 	public static final String VIEW_FORM = "/WEB-INF/createOrder.jsp";
 	public static final String VIEW_RESULT = "/WEB-INF/displayOrder.jsp";
@@ -27,6 +32,7 @@ public class OrderController extends HttpServlet {
 		this.getServletContext().getRequestDispatcher(VIEW_FORM).forward(req, resp);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
@@ -43,6 +49,22 @@ public class OrderController extends HttpServlet {
 		/* Transmit req/resp to JSP */
 		if (form.getErrors().isEmpty())
 		{
+			if (form.isYesChecked()) // New customer
+			{
+				AvoidDuplication.saveCustomerInSession(order.getCustomer(), req);
+			}
+			
+			HttpSession session = req.getSession();
+			List<Order> orders = (List<Order>) session.getAttribute(SESS_ATT_ORDERS);
+			
+			if (orders == null)
+			{
+				orders = new ArrayList<Order>();
+				session.setAttribute(SESS_ATT_ORDERS, orders);
+			}
+			
+			orders.add(order);
+			
 			this.getServletContext().getRequestDispatcher(VIEW_RESULT).forward(req, resp);
 		}
 		else {

@@ -1,5 +1,7 @@
 package com.sdzee.forms;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.joda.time.DateTime;
@@ -10,20 +12,63 @@ import com.sdzee.forms.base.BaseForm;
 
 public final class OrderForm extends BaseForm {
 	
+	private static final String PARAM_NEW_CUSTOMER = "newCustomer";
+	private static final String PARAM_CUSTOMER_IDX = "customerIdx";
 	private static final String PARAM_AMOUNT = "orderAmount";
 	private static final String PARAM_PAYMENT_METHOD = "orderPaymentMethod";
 	private static final String PARAM_PAYMENT_STATUS = "orderPaymentStatus";
 	private static final String PARAM_SHIPPING_MODE = "orderShippingMode";
 	private static final String PARAM_DELIVERY_STATUS = "orderDeliveryStatus";
 	
-	private static final String DATE_FORMAT = "dd/MM/yyyy HH:MM:ss";
+	private static final String SESS_ATT_CUSTOMERS = "customers";
 	
+	private static final String DATE_FORMAT = "dd/MM/yyyy HH:MM:ss";
+	private static final String NEW_CUSTOMER_VALUE_YES = "yes";
+	private static final String NEW_CUSTOMER_VALUE_NO = "no";
+	
+	private boolean yesChecked = false;
+	private boolean noChecked = false;
+	private int customerIdx = 1;
+	
+	@SuppressWarnings("unchecked")
 	public Order createOrder(HttpServletRequest request) {
 		
+		String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
+		String customerIdxAsString = getParamValue(request, PARAM_CUSTOMER_IDX);
+		
+		Customer customer = null;
+		
+		try
+		{
+			validateNewCustomer(newCustomer);
+		}
+		catch (Exception e)
+		{
+			setError(PARAM_NEW_CUSTOMER, e.getMessage());
+		}
+		
+		if (noChecked)
+		{
+			try
+			{
+				List<Customer> customers = (List<Customer>) request.getSession().getAttribute(SESS_ATT_CUSTOMERS);
+				
+				validateCustomerIdx(customerIdxAsString, customers);
+				
+				customer = customers.get(customerIdx);
+			}
+			catch (Exception e)
+			{
+				setError(PARAM_CUSTOMER_IDX, e.getMessage());
+			}
+		}
+		else if (yesChecked)
+		{
 		/* Build OrderForm from CustomerForm */
 		CustomerForm customerForm = new CustomerForm();
-		Customer customer = customerForm.createCustomer(request);
+		customer = customerForm.createCustomer(request);
 		errors.putAll(customerForm.getErrors());
+		}
 		
 		String amount = getParamValue(request, PARAM_AMOUNT);
 		String paymentMethod = getParamValue(request, PARAM_PAYMENT_METHOD);
@@ -99,6 +144,44 @@ public final class OrderForm extends BaseForm {
 		return order;
 	}
 	
+	private void validateNewCustomer(String newCustomer) throws Exception {
+		
+		if (NEW_CUSTOMER_VALUE_YES.equals(newCustomer))
+		{
+			yesChecked = true;
+		}
+		else if (NEW_CUSTOMER_VALUE_NO.equals(newCustomer))
+		{
+			noChecked = true;
+		}
+		else
+		{
+			throw new Exception("The new customer attribute must be set to yes or no.");
+		}
+	}
+	
+	private void customerNotFromListException() throws Exception {
+		
+		throw new Exception("The selected customer must come from the list.");
+	}
+	
+	private void validateCustomerIdx(String customerIdxAsString, List<Customer> customers) throws Exception {
+		
+		try
+		{
+			customerIdx = Integer.parseInt(customerIdxAsString);
+			
+			if (customers == null || customers.isEmpty() || customerIdx < 0 || customerIdx >= customers.size())
+			{
+				customerNotFromListException();
+			}
+		}
+		catch (NumberFormatException nfe)
+		{
+			customerNotFromListException();
+		}
+	}
+	
 	private void validateAmount(String amount) throws Exception {
 		
 		if (amount == null || !amount.matches("\\d+(\\.\\d+)?"))
@@ -131,5 +214,17 @@ public final class OrderForm extends BaseForm {
 		{
 			validateTwoCharactersLongField(deliveryStatus, "delivery status");
 		}
+	}
+	
+	public boolean isYesChecked() {
+		return yesChecked;
+	}
+	
+	public boolean isNoChecked() {
+		return noChecked;
+	}
+
+	public int getCustomerIdx() {
+		return customerIdx;
 	}
 }

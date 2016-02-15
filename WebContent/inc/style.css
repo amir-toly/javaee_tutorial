@@ -3,6 +3,26 @@ body, p, legend, label, input {
 	font: normal 8pt verdana, helvetica, sans-serif;
 }
 
+table {
+	border-spacing: 0px;
+}
+
+th, td {
+	padding: 5px;
+}
+
+th {
+	color: #0568CD;
+	border-left: 1px solid #0568CD;
+	border-top: 1px solid #0568CD;
+	border-bottom: 1px solid #0568CD;
+}
+
+td {
+	border-bottom: 1px solid grey;
+	border-left: 1px solid grey;
+}
+
 /* Forms --------------------------------------------------------------------------------------- */
 fieldset {
 	padding: 10px;
@@ -15,10 +35,14 @@ legend {
 	color: #0568CD;
 }
 
-form label {
+form label, form div.labelFormForRadio {
 	float: left;
 	width: 200px;
 	margin: 3px 0px 0px 0px;
+}
+
+form label.radioLabel {
+	float: none;
 }
 
 form input {
@@ -48,6 +72,22 @@ form input.withoutLabel {
 	color: #E8A22B;
 }
 
+.action {
+	color: red;
+}
+
+.tableRightBorder {
+	border-right: 1px solid;
+}
+
+.stopFloat {
+	clear: both;
+}
+
+.hidden {
+	display: none;
+}
+
 /* Building blocks ----------------------------------------------------------------------------- */
 div#menu {
 	border: 1px solid #0568CD;
@@ -57,4 +97,27 @@ div#menu {
 
 div#content {
 	margin: 10px;
+}
+
+a.action {
+	text-decoration: none;
+}
+
+th.action {
+	border-right-color: red;
+	border-top: 1px solid red;
+	border-bottom: 1px solid red;
+}
+
+td.action {
+	text-align: center;
+	font-weight: bold;
+}
+
+td.tableRightBorder {
+	border-right-color: grey;
+}
+
+tr.odd {
+	background-color: silver;
 }
