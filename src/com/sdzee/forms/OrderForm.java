@@ -64,10 +64,10 @@ public final class OrderForm extends BaseForm {
 		}
 		else if (yesChecked)
 		{
-		/* Build OrderForm from CustomerForm */
-		CustomerForm customerForm = new CustomerForm();
-		customer = customerForm.createCustomer(request);
-		errors.putAll(customerForm.getErrors());
+			/* Build OrderForm from CustomerForm */
+			CustomerForm customerForm = new CustomerForm();
+			customer = customerForm.createCustomer(request);
+			errors.putAll(customerForm.getErrors());
 		}
 		
 		String amount = getParamValue(request, PARAM_AMOUNT);
