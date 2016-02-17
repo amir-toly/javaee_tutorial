@@ -1,7 +1,7 @@
 package com.sdzee.servlets;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +13,7 @@ import com.sdzee.beans.Order;
 public class OrderDeleteController extends HttpServlet {
 	
 	public static final String SESS_ATT_ORDERS = "orders";
-	public static final String PARAM_ORDER_IDX = "orderIdx";
+	public static final String PARAM_ORDER_KEY = "orderKey";
 	
 	public static final String VIEW = "/listOrders";
 	
@@ -23,24 +23,10 @@ public class OrderDeleteController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		List<Order> orders = (List<Order>) req.getSession().getAttribute(SESS_ATT_ORDERS);
+		Map<String, Order> orders = (Map<String, Order>) req.getSession().getAttribute(SESS_ATT_ORDERS);
+		String orderKey = req.getParameter(PARAM_ORDER_KEY);
 		
-		String orderIdxAsString = req.getParameter(PARAM_ORDER_IDX);
-		int orderIdx = -1;
-		
-		try
-		{
-			orderIdx = Integer.parseInt(orderIdxAsString);
-		}
-		catch (NumberFormatException nfe)
-		{
-			// orderIdx variable has already been set to -1 by default
-		}
-		
-		if (orderIdx >= 0 && orderIdx < orders.size())
-		{
-			orders.remove(orderIdx);
-		}
+		orders.remove(orderKey);
 		
 		resp.sendRedirect(req.getContextPath() + VIEW);
 	}

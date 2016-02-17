@@ -34,17 +34,17 @@
 					<br/>
 					
 					<div id="existingCustomer" <c:if test='${ !requestScope.form.noChecked }'>class="hidden"</c:if>>
-						<select name="customerIdx">
+						<select name="customerKey">
 							<option>Select a customer:</option>
 							
-							<c:forEach items="${ sessionScope.customers }" var="customer" varStatus="customerStatus">
-								<option <c:if test='${ requestScope.form.customerIdx == customerStatus.index }'>selected</c:if> value="${ customerStatus.index }">
-									${ customer.firstName } ${ customer.lastName }
+							<c:forEach items="${ sessionScope.customers }" var="customer">
+								<option <c:if test='${ requestScope.form.customerKey == customer.key }'>selected</c:if> value="${ customer.key }">
+									${ customer.value.firstName } ${ customer.value.lastName }
 								</option>
 							</c:forEach>
 						</select>
 						
-						<span class="error">${ requestScope.form.errors['customerIdx'] }</span>
+						<span class="error">${ requestScope.form.errors['customerKey'] }</span>
 					</div>
 					
 					<div id="newCustomer" <c:if test='${ !requestScope.form.yesChecked }'>class="hidden"</c:if>>

@@ -34,17 +34,17 @@
 							</c:if>
 							
 							<tr class='<c:out value="${ oddOrNothing }"/>'>
-								<td><c:out value="${ order.customer.firstName } ${ order.customer.lastName }"></c:out></td>
-								<td><c:out value="${ order.date }"></c:out></td>
-								<td><c:out value="${ order.amount }"></c:out></td>
-								<td><c:out value="${ order.paymentMethod }"></c:out></td>
-								<td><c:out value="${ order.paymentStatus }"></c:out></td>
-								<td><c:out value="${ order.shippingMode }"></c:out></td>
-								<td><c:out value="${ order.deliveryStatus }"></c:out></td>
+								<td><c:out value="${ order.value.customer.firstName } ${ order.value.customer.lastName }"></c:out></td>
+								<td><c:out value="${ order.value.date }"></c:out></td>
+								<td><c:out value="${ order.value.amount }"></c:out></td>
+								<td><c:out value="${ order.value.paymentMethod }"></c:out></td>
+								<td><c:out value="${ order.value.paymentStatus }"></c:out></td>
+								<td><c:out value="${ order.value.shippingMode }"></c:out></td>
+								<td><c:out value="${ order.value.deliveryStatus }"></c:out></td>
 								
 								<td class="action tableRightBorder">
 									<c:url value="/deleteOrder" var="deleteOrderLink">
-										<c:param name="orderIdx" value="${ status.index }" />
+										<c:param name="orderKey" value="${ order.key }" />
 									</c:url>
 									
 									<a class="action" href="${ deleteOrderLink }">X</a>

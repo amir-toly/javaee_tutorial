@@ -1,7 +1,7 @@
 package com.sdzee.servlets.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,14 +16,14 @@ public class AvoidDuplication {
 	public static void saveCustomerInSession(Customer customer, HttpServletRequest req) {
 		
 		HttpSession session = req.getSession();
-		List<Customer> customers = (List<Customer>) session.getAttribute(SESS_ATT_CUSTOMERS);
+		Map<String,Customer> customers = (Map<String,Customer>) session.getAttribute(SESS_ATT_CUSTOMERS);
 		
 		if (customers == null)
 		{
-			customers = new ArrayList<Customer>();
+			customers = new HashMap<String, Customer>();
 			session.setAttribute(SESS_ATT_CUSTOMERS, customers);
 		}
 		
-		customers.add(customer);
+		customers.put(customer.getLastName(), customer);
 	}
 }

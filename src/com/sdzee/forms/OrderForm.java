@@ -1,6 +1,6 @@
 package com.sdzee.forms;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,7 +13,7 @@ import com.sdzee.forms.base.BaseForm;
 public final class OrderForm extends BaseForm {
 	
 	private static final String PARAM_NEW_CUSTOMER = "newCustomer";
-	private static final String PARAM_CUSTOMER_IDX = "customerIdx";
+	private static final String PARAM_CUSTOMER_KEY = "customerKey";
 	private static final String PARAM_AMOUNT = "orderAmount";
 	private static final String PARAM_PAYMENT_METHOD = "orderPaymentMethod";
 	private static final String PARAM_PAYMENT_STATUS = "orderPaymentStatus";
@@ -28,13 +28,13 @@ public final class OrderForm extends BaseForm {
 	
 	private boolean yesChecked = false;
 	private boolean noChecked = false;
-	private int customerIdx = 1;
+	private String customerKey;
 	
 	@SuppressWarnings("unchecked")
 	public Order createOrder(HttpServletRequest request) {
 		
 		String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
-		String customerIdxAsString = getParamValue(request, PARAM_CUSTOMER_IDX);
+		customerKey = getParamValue(request, PARAM_CUSTOMER_KEY);
 		
 		Customer customer = null;
 		
@@ -51,15 +51,15 @@ public final class OrderForm extends BaseForm {
 		{
 			try
 			{
-				List<Customer> customers = (List<Customer>) request.getSession().getAttribute(SESS_ATT_CUSTOMERS);
+				Map<String, Customer> customers = (Map<String, Customer>) request.getSession().getAttribute(SESS_ATT_CUSTOMERS);
 				
-				validateCustomerIdx(customerIdxAsString, customers);
+				validateCustomerKey(customerKey, customers);
 				
-				customer = customers.get(customerIdx);
+				customer = customers.get(customerKey);
 			}
 			catch (Exception e)
 			{
-				setError(PARAM_CUSTOMER_IDX, e.getMessage());
+				setError(PARAM_CUSTOMER_KEY, e.getMessage());
 			}
 		}
 		else if (yesChecked)
@@ -160,25 +160,11 @@ public final class OrderForm extends BaseForm {
 		}
 	}
 	
-	private void customerNotFromListException() throws Exception {
+	private void validateCustomerKey(String customerKey, Map<String, Customer> customers) throws Exception {
 		
-		throw new Exception("The selected customer must come from the list.");
-	}
-	
-	private void validateCustomerIdx(String customerIdxAsString, List<Customer> customers) throws Exception {
-		
-		try
+		if (!customers.containsKey(customerKey))
 		{
-			customerIdx = Integer.parseInt(customerIdxAsString);
-			
-			if (customers == null || customers.isEmpty() || customerIdx < 0 || customerIdx >= customers.size())
-			{
-				customerNotFromListException();
-			}
-		}
-		catch (NumberFormatException nfe)
-		{
-			customerNotFromListException();
+			throw new Exception("The selected customer must come from the list.");
 		}
 	}
 	
@@ -224,7 +210,7 @@ public final class OrderForm extends BaseForm {
 		return noChecked;
 	}
 
-	public int getCustomerIdx() {
-		return customerIdx;
+	public String getCustomerKey() {
+		return customerKey;
 	}
 }

@@ -1,8 +1,8 @@
 package com.sdzee.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -49,21 +49,18 @@ public class OrderController extends HttpServlet {
 		/* Transmit req/resp to JSP */
 		if (form.getErrors().isEmpty())
 		{
-			if (form.isYesChecked()) // New customer
-			{
-				AvoidDuplication.saveCustomerInSession(order.getCustomer(), req);
-			}
+			AvoidDuplication.saveCustomerInSession(order.getCustomer(), req);
 			
 			HttpSession session = req.getSession();
-			List<Order> orders = (List<Order>) session.getAttribute(SESS_ATT_ORDERS);
+			Map<String, Order> orders = (Map<String, Order>) session.getAttribute(SESS_ATT_ORDERS);
 			
 			if (orders == null)
 			{
-				orders = new ArrayList<Order>();
+				orders = new HashMap<String, Order>();
 				session.setAttribute(SESS_ATT_ORDERS, orders);
 			}
 			
-			orders.add(order);
+			orders.put(order.getDate(), order);
 			
 			this.getServletContext().getRequestDispatcher(VIEW_RESULT).forward(req, resp);
 		}

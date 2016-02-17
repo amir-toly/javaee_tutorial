@@ -32,15 +32,15 @@
 							</c:if>
 							
 							<tr class='<c:out value="${ oddOrNothing }"/>'>
-								<td><c:out value="${ customer.lastName }"></c:out></td>
-								<td><c:out value="${ customer.firstName }"></c:out></td>
-								<td><c:out value="${ customer.address }"></c:out></td>
-								<td><c:out value="${ customer.phoneNumber }"></c:out></td>
-								<td><c:out value="${ customer.email }"></c:out></td>
+								<td><c:out value="${ customer.value.lastName }"></c:out></td>
+								<td><c:out value="${ customer.value.firstName }"></c:out></td>
+								<td><c:out value="${ customer.value.address }"></c:out></td>
+								<td><c:out value="${ customer.value.phoneNumber }"></c:out></td>
+								<td><c:out value="${ customer.value.email }"></c:out></td>
 								
 								<td class="action tableRightBorder">
 									<c:url value="/deleteCustomer" var="deleteCustomerLink">
-										<c:param name="customerIdx" value="${ status.index }" />
+										<c:param name="customerKey" value="${ customer.key }" />
 									</c:url>
 									
 									<a class="action" href="${ deleteCustomerLink }">X</a>
