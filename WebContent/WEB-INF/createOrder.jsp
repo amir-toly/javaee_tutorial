@@ -19,34 +19,34 @@
 					<legend>Customer details</legend>
 					
 					<c:if test="${ !empty sessionScope.customers }">
-					<div class="labelFormForRadio">New customer? <span class="required">*</span></div>
-					<input
-						type="radio" name="newCustomer" value="newCustomer" id="yes"
-						<c:if test='${ requestScope.form.yesChecked }'>checked</c:if>
-					/>
-					<label class="radioLabel" for="yes">Yes</label>
-					<input
-						type="radio" name="newCustomer" value="existingCustomer" id="no"
-						<c:if test='${ requestScope.form.noChecked }'>checked</c:if>
-					/>
-					<label class="radioLabel" for="no">No</label>
-					<span class="error">${ requestScope.form.errors['newCustomer'] }</span>
-					<br class="stopFloat" />
-					<br/>
-					
-					<div id="existingCustomer" <c:if test='${ !requestScope.form.noChecked }'>class="hidden"</c:if>>
-						<select name="customerKey">
-							<option>Select a customer:</option>
-							
-							<c:forEach items="${ sessionScope.customers }" var="customer">
-								<option <c:if test='${ requestScope.form.customerKey == customer.key }'>selected</c:if> value="${ customer.key }">
-									${ customer.value.firstName } ${ customer.value.lastName }
-								</option>
-							</c:forEach>
-						</select>
+						<div class="labelFormForRadio">New customer? <span class="required">*</span></div>
+						<input
+							type="radio" name="newCustomer" value="newCustomer" id="yes"
+							<c:if test='${ requestScope.form.yesChecked }'>checked</c:if>
+						/>
+						<label class="radioLabel" for="yes">Yes</label>
+						<input
+							type="radio" name="newCustomer" value="existingCustomer" id="no"
+							<c:if test='${ requestScope.form.noChecked }'>checked</c:if>
+						/>
+						<label class="radioLabel" for="no">No</label>
+						<span class="error">${ requestScope.form.errors['newCustomer'] }</span>
+						<br class="stopFloat" />
+						<br/>
 						
-						<span class="error">${ requestScope.form.errors['customerKey'] }</span>
-					</div>
+						<div id="existingCustomer" <c:if test='${ !requestScope.form.noChecked }'>class="hidden"</c:if>>
+							<select name="customerKey">
+								<option>Select a customer:</option>
+								
+								<c:forEach items="${ sessionScope.customers }" var="customer">
+									<option <c:if test='${ requestScope.form.customerKey == customer.key }'>selected</c:if> value="${ customer.key }">
+										${ customer.value.firstName } ${ customer.value.lastName }
+									</option>
+								</c:forEach>
+							</select>
+							
+							<span class="error">${ requestScope.form.errors['customerKey'] }</span>
+						</div>
 					</c:if>
 					
 					<div id="newCustomer" <c:if test='${ !empty sessionScope.customers && !requestScope.form.yesChecked }'>class="hidden"</c:if>>

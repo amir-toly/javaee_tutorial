@@ -45,31 +45,31 @@ public final class OrderForm extends BaseForm {
 		
 		if (customersInSession)
 		{
-		String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
-		customerKey = getParamValue(request, PARAM_CUSTOMER_KEY);
-		
-		try
-		{
-			validateNewCustomer(newCustomer);
-		}
-		catch (Exception e)
-		{
-			setError(PARAM_NEW_CUSTOMER, e.getMessage());
-		}
-		
-		if (noChecked)
-		{
+			String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
+			customerKey = getParamValue(request, PARAM_CUSTOMER_KEY);
+			
 			try
 			{
-				validateCustomerKey(customerKey, customers);
-				
-				customer = customers.get(customerKey);
+				validateNewCustomer(newCustomer);
 			}
 			catch (Exception e)
 			{
-				setError(PARAM_CUSTOMER_KEY, e.getMessage());
+				setError(PARAM_NEW_CUSTOMER, e.getMessage());
 			}
-		}
+			
+			if (noChecked)
+			{
+				try
+				{
+					validateCustomerKey(customerKey, customers);
+					
+					customer = customers.get(customerKey);
+				}
+				catch (Exception e)
+				{
+					setError(PARAM_CUSTOMER_KEY, e.getMessage());
+				}
+			}
 		}
 		
 		if (!customersInSession || yesChecked)
