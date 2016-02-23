@@ -26,7 +26,10 @@ public class CustomerDeleteController extends HttpServlet {
 		Map<String, Customer> customers = (Map<String, Customer>) req.getSession().getAttribute(SESS_ATT_CUSTOMERS);
 		String customerKey = req.getParameter(PARAM_CUSTOMER_KEY);
 		
-		customers.remove(customerKey);
+		if (customers != null)
+		{
+			customers.remove(customerKey);
+		}
 		
 		resp.sendRedirect(req.getContextPath() + VIEW);
 	}

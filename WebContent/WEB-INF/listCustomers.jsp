@@ -21,29 +21,23 @@
 							<th>Address</th>
 							<th>Phone number</th>
 							<th>Email</th>
-							<th class="action tableRightBorder">Action</th>
+							<th class="action">Action</th>
 						</tr>
 						
 						<c:forEach items="${ sessionScope.customers }" var="customer" varStatus="status">
-							<c:set var="oddOrNothing" value="" />
-							
-							<c:if test="${ status.count % 2 != 0 }">
-								<c:set var="oddOrNothing" value="odd" />
-							</c:if>
-							
-							<tr class='<c:out value="${ oddOrNothing }"/>'>
+							<tr class="${ status.count % 2 != 0 ? 'odd' : '' }">
 								<td><c:out value="${ customer.value.lastName }"></c:out></td>
 								<td><c:out value="${ customer.value.firstName }"></c:out></td>
 								<td><c:out value="${ customer.value.address }"></c:out></td>
 								<td><c:out value="${ customer.value.phoneNumber }"></c:out></td>
 								<td><c:out value="${ customer.value.email }"></c:out></td>
 								
-								<td class="action tableRightBorder">
+								<td class="action">
 									<c:url value="/deleteCustomer" var="deleteCustomerLink">
 										<c:param name="customerKey" value="${ customer.key }" />
 									</c:url>
 									
-									<a class="action" href="${ deleteCustomerLink }">X</a>
+									<a href="${ deleteCustomerLink }"><img src='<c:url value="/inc/delete.png" />' alt="Delete" /></a>
 								</td>
 							</tr>
 						</c:forEach>

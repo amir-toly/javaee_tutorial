@@ -23,8 +23,8 @@ public final class OrderForm extends BaseForm {
 	private static final String SESS_ATT_CUSTOMERS = "customers";
 	
 	private static final String DATE_FORMAT = "dd/MM/yyyy HH:MM:ss";
-	private static final String NEW_CUSTOMER_VALUE_YES = "yes";
-	private static final String NEW_CUSTOMER_VALUE_NO = "no";
+	private static final String NEW_CUSTOMER_VALUE_YES = "newCustomer";
+	private static final String NEW_CUSTOMER_VALUE_NO = "existingCustomer";
 	
 	private boolean yesChecked = false;
 	private boolean noChecked = false;
@@ -33,10 +33,20 @@ public final class OrderForm extends BaseForm {
 	@SuppressWarnings("unchecked")
 	public Order createOrder(HttpServletRequest request) {
 		
-		String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
-		customerKey = getParamValue(request, PARAM_CUSTOMER_KEY);
+		Map<String, Customer> customers = (Map<String, Customer>) request.getSession().getAttribute(SESS_ATT_CUSTOMERS);
+		boolean customersInSession = false;
+		
+		if (customers != null && !customers.isEmpty())
+		{
+			customersInSession = true;
+		}
 		
 		Customer customer = null;
+		
+		if (customersInSession)
+		{
+		String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
+		customerKey = getParamValue(request, PARAM_CUSTOMER_KEY);
 		
 		try
 		{
@@ -51,8 +61,6 @@ public final class OrderForm extends BaseForm {
 		{
 			try
 			{
-				Map<String, Customer> customers = (Map<String, Customer>) request.getSession().getAttribute(SESS_ATT_CUSTOMERS);
-				
 				validateCustomerKey(customerKey, customers);
 				
 				customer = customers.get(customerKey);
@@ -62,7 +70,9 @@ public final class OrderForm extends BaseForm {
 				setError(PARAM_CUSTOMER_KEY, e.getMessage());
 			}
 		}
-		else if (yesChecked)
+		}
+		
+		if (!customersInSession || yesChecked)
 		{
 			/* Build OrderForm from CustomerForm */
 			CustomerForm customerForm = new CustomerForm();

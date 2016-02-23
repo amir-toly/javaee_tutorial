@@ -4,7 +4,7 @@ body, p, legend, label, input {
 }
 
 table {
-	border-spacing: 0px;
+	border-collapse: collapse;
 }
 
 th, td {
@@ -13,14 +13,11 @@ th, td {
 
 th {
 	color: #0568CD;
-	border-left: 1px solid #0568CD;
-	border-top: 1px solid #0568CD;
-	border-bottom: 1px solid #0568CD;
+	border: 1px solid #0568CD;
 }
 
 td {
-	border-bottom: 1px solid grey;
-	border-left: 1px solid grey;
+	border: 1px solid #ddd;
 }
 
 /* Forms --------------------------------------------------------------------------------------- */
@@ -72,14 +69,6 @@ form input.withoutLabel {
 	color: #E8A22B;
 }
 
-.action {
-	color: red;
-}
-
-.tableRightBorder {
-	border-right: 1px solid;
-}
-
 .stopFloat {
 	clear: both;
 }
@@ -99,25 +88,15 @@ div#content {
 	margin: 10px;
 }
 
-a.action {
-	text-decoration: none;
-}
-
 th.action {
-	border-right-color: red;
-	border-top: 1px solid red;
-	border-bottom: 1px solid red;
+	border: 1px solid #900;
+	color: #900;
 }
 
 td.action {
 	text-align: center;
-	font-weight: bold;
-}
-
-td.tableRightBorder {
-	border-right-color: grey;
 }
 
 tr.odd {
-	background-color: silver;
+	background-color: #efefef;
 }

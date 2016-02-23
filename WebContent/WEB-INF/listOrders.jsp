@@ -23,17 +23,11 @@
 							<th>Payment status</th>
 							<th>Shipping mode</th>
 							<th>Delivery status</th>
-							<th class="action tableRightBorder">Action</th>
+							<th class="action">Action</th>
 						</tr>
 						
 						<c:forEach items="${ sessionScope.orders }" var="order" varStatus="status">
-							<c:set var="oddOrNothing" value="" />
-							
-							<c:if test="${ status.count % 2 != 0 }">
-								<c:set var="oddOrNothing" value="odd" />
-							</c:if>
-							
-							<tr class='<c:out value="${ oddOrNothing }"/>'>
+							<tr class="${ status.count % 2 != 0 ? 'odd' : '' }">
 								<td><c:out value="${ order.value.customer.firstName } ${ order.value.customer.lastName }"></c:out></td>
 								<td><c:out value="${ order.value.date }"></c:out></td>
 								<td><c:out value="${ order.value.amount }"></c:out></td>
@@ -42,12 +36,12 @@
 								<td><c:out value="${ order.value.shippingMode }"></c:out></td>
 								<td><c:out value="${ order.value.deliveryStatus }"></c:out></td>
 								
-								<td class="action tableRightBorder">
+								<td class="action">
 									<c:url value="/deleteOrder" var="deleteOrderLink">
 										<c:param name="orderKey" value="${ order.key }" />
 									</c:url>
 									
-									<a class="action" href="${ deleteOrderLink }">X</a>
+									<a href="${ deleteOrderLink }"><img src='<c:url value="/inc/delete.png" />' alt="Delete" /></a>
 								</td>
 							</tr>
 						</c:forEach>

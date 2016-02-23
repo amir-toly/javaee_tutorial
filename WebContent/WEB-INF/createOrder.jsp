@@ -18,14 +18,15 @@
 				<fieldset>
 					<legend>Customer details</legend>
 					
+					<c:if test="${ !empty sessionScope.customers }">
 					<div class="labelFormForRadio">New customer? <span class="required">*</span></div>
 					<input
-						type="radio" name="newCustomer" value="yes" id="yes" onclick="toggle('newCustomer', 'existingCustomer')"
+						type="radio" name="newCustomer" value="newCustomer" id="yes"
 						<c:if test='${ requestScope.form.yesChecked }'>checked</c:if>
 					/>
 					<label class="radioLabel" for="yes">Yes</label>
 					<input
-						type="radio" name="newCustomer" value="no" id="no" onclick="toggle('existingCustomer', 'newCustomer')"
+						type="radio" name="newCustomer" value="existingCustomer" id="no"
 						<c:if test='${ requestScope.form.noChecked }'>checked</c:if>
 					/>
 					<label class="radioLabel" for="no">No</label>
@@ -46,8 +47,9 @@
 						
 						<span class="error">${ requestScope.form.errors['customerKey'] }</span>
 					</div>
+					</c:if>
 					
-					<div id="newCustomer" <c:if test='${ !requestScope.form.yesChecked }'>class="hidden"</c:if>>
+					<div id="newCustomer" <c:if test='${ !empty sessionScope.customers && !requestScope.form.yesChecked }'>class="hidden"</c:if>>
 						<c:import url="/inc/inc_customer_form.jsp" />
 					</div>
 				</fieldset>
@@ -93,6 +95,7 @@
 			</form>
 		</div>
 		
+		<script src="<c:url value="/inc/jquery-1.12.0.js" />"></script>
 		<script src="<c:url value="/inc/createOrder.js" />"></script>
 	</body>
 </html>

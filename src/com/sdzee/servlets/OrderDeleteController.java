@@ -26,7 +26,10 @@ public class OrderDeleteController extends HttpServlet {
 		Map<String, Order> orders = (Map<String, Order>) req.getSession().getAttribute(SESS_ATT_ORDERS);
 		String orderKey = req.getParameter(PARAM_ORDER_KEY);
 		
-		orders.remove(orderKey);
+		if (orders != null)
+		{
+			orders.remove(orderKey);
+		}
 		
 		resp.sendRedirect(req.getContextPath() + VIEW);
 	}
