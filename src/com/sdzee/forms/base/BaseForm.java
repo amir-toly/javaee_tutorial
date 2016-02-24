@@ -24,7 +24,7 @@ public abstract class BaseForm {
 	}
 	
 	/**
-	 * Utility method which returns null if the parameter value is not empty. Null otherwise. 
+	 * Utility method which returns the parameter value if not empty. Null otherwise. 
 	 * @param request
 	 * @param paramName
 	 * @return String
