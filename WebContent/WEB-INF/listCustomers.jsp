@@ -21,6 +21,7 @@
 							<th>Address</th>
 							<th>Phone number</th>
 							<th>Email</th>
+							<th>Profile picture</th>
 							<th class="action">Action</th>
 						</tr>
 						
@@ -31,6 +32,11 @@
 								<td><c:out value="${ customer.value.address }"></c:out></td>
 								<td><c:out value="${ customer.value.phoneNumber }"></c:out></td>
 								<td><c:out value="${ customer.value.email }"></c:out></td>
+								<td>
+									<c:if test="${ !empty customer.value.pictureName }">
+										<a href='<c:url value="/files/${ customer.value.pictureName }" />'>Here</a>
+									</c:if>
+								</td>
 								
 								<td class="action">
 									<c:url value="/deleteCustomer" var="deleteCustomerLink">

@@ -25,3 +25,8 @@
 <input type="email" id="customerEmailAddress" name="customerEmailAddress" value='<c:out value="${ requestScope.customer.email }" />' size="20" maxlength="60" />
 <span class="error">${ requestScope.form.errors['customerEmailAddress'] }</span>
 <br />
+
+<label for="customerPictureFile">Profile picture</label>
+<input type="file" id="customerPictureFile" name="customerPictureFile" />
+<span class="error">${ requestScope.form.errors['customerPictureFile'] }</span>
+<br />

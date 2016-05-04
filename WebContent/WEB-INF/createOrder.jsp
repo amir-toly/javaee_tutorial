@@ -12,7 +12,7 @@
 		<c:import url="/inc/menu.jsp" />
 		
 		<div>
-			<form method="post" action='<c:url value="/createOrder" />'>
+			<form method="post" action='<c:url value="/createOrder" />' enctype="multipart/form-data">
 				<c:set var="customer" value="${ requestScope.order.customer }" scope="request" />
 				
 				<fieldset>

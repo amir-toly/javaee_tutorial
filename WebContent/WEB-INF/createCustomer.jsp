@@ -12,7 +12,7 @@
 		<c:import url="/inc/menu.jsp" />
 		
 		<div>
-			<form method="post" action='<c:url value="/createCustomer" />'>
+			<form method="post" action='<c:url value="/createCustomer" />' enctype="multipart/form-data">
 				<fieldset>
 					<legend>Customer details</legend>
 					

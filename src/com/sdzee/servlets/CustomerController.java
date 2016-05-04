@@ -35,7 +35,7 @@ public class CustomerController extends HttpServlet {
 		CustomerForm form = new CustomerForm();
 		
 		/* Retrieve bean from form processing */
-		Customer customer = form.createCustomer(req);
+		Customer customer = form.createCustomer(req, AvoidDuplication.getPath(this));
 		
 		/* Save bean and form in req object */
 		req.setAttribute(ATT_FORM, form);

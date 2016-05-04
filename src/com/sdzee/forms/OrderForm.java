@@ -31,7 +31,7 @@ public final class OrderForm extends BaseForm {
 	private String customerKey;
 	
 	@SuppressWarnings("unchecked")
-	public Order createOrder(HttpServletRequest request) {
+	public Order createOrder(HttpServletRequest request, String path) {
 		
 		Map<String, Customer> customers = (Map<String, Customer>) request.getSession().getAttribute(SESS_ATT_CUSTOMERS);
 		boolean customersInSession = false;
@@ -76,7 +76,7 @@ public final class OrderForm extends BaseForm {
 		{
 			/* Build OrderForm from CustomerForm */
 			CustomerForm customerForm = new CustomerForm();
-			customer = customerForm.createCustomer(request);
+			customer = customerForm.createCustomer(request, path);
 			errors.putAll(customerForm.getErrors());
 		}
 		
@@ -154,6 +154,10 @@ public final class OrderForm extends BaseForm {
 		return order;
 	}
 	
+	/**
+	 * VALIDATION METHODS
+	 */
+	
 	private void validateNewCustomer(String newCustomer) throws Exception {
 		
 		if (NEW_CUSTOMER_VALUE_YES.equals(newCustomer))
@@ -211,6 +215,10 @@ public final class OrderForm extends BaseForm {
 			validateTwoCharactersLongField(deliveryStatus, "delivery status");
 		}
 	}
+	
+	/**
+	 * OTHER METHODS
+	 */
 	
 	public boolean isYesChecked() {
 		return yesChecked;

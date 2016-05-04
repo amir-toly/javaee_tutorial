@@ -36,6 +36,10 @@
 				Email:
 				<c:out value="${ requestScope.customer.email }" />
 			</p>
+			<p>
+				Picture name:
+				<c:out value="${ requestScope.customer.pictureName }" />
+			</p>
 		</div>
 	</body>
 </html>

@@ -7,6 +7,7 @@ public class Customer {
 	private String address;
 	private String phoneNumber;
 	private String email;
+	private String pictureName;
 
 	public String getLastName() {
 		return lastName;
@@ -46,5 +47,13 @@ public class Customer {
 	
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPictureName() {
+		return pictureName;
+	}
+
+	public void setPictureName(String pictureName) {
+		this.pictureName = pictureName;
 	}
 }
