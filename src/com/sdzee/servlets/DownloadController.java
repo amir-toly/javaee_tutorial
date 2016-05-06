@@ -52,7 +52,7 @@ public class DownloadController extends HttpServlet {
 		resp.setBufferSize(BUFFER_SIZE);
 		resp.setContentType(fileType);
 		resp.setHeader("Content-Length", String.valueOf(file.length()));
-		resp.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+		resp.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");
 		
 		BufferedInputStream input = null;
 		BufferedOutputStream output = null;

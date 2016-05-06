@@ -26,8 +26,7 @@ public class DownloadControllerTest extends CustomersListControllerTestBase {
 		
 		driver.findElement(By.xpath("//tr[2]/td[6]/a")).click();
 		
-		// If we stay on this page, we can assume the link is valid
-		Assert.assertEquals("Customers list", driver.getTitle());
+		Assert.assertEquals(BASE_URL + "files/delete.png", driver.getCurrentUrl());
 	}
 	
 	@Test

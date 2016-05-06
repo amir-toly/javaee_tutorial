@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,8 @@ import javax.servlet.http.Part;
 
 import com.sdzee.beans.Customer;
 import com.sdzee.forms.base.BaseForm;
+
+import eu.medsea.mimeutil.MimeUtil;
 
 public final class CustomerForm extends BaseForm {
 	
@@ -141,9 +144,12 @@ public final class CustomerForm extends BaseForm {
 		}
 	}
 	
-	private void validatePictureFile(String mimeType) throws Exception {
+	private void validatePictureFile(InputStream fileContent) throws Exception {
 		
-		if (mimeType == null || !mimeType.startsWith("image/"))
+		MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
+		Collection<?> mimeTypes = MimeUtil.getMimeTypes(fileContent);
+		
+		if (!mimeTypes.toString().startsWith("image"))
 		{
 			throw new Exception("The picture file must match an image type.");
 		}
@@ -196,7 +202,7 @@ public final class CustomerForm extends BaseForm {
 			{
 				try
 				{
-					validatePictureFile(request.getServletContext().getMimeType(filename));
+					validatePictureFile(fileContent);
 				}
 				catch (Exception e)
 				{

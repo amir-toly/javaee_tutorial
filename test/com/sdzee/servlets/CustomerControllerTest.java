@@ -117,7 +117,7 @@ public class CustomerControllerTest extends FormControllerTestBase {
 	@Test
 	public void testPictureFileWrongType() {
 		
-		checkErrorMsgForInput("customerPictureFile", "/Users/domanduck/Downloads/jquery.js", ERROR_MSG_PICTURE_FILE);
+		checkErrorMsgForInput("customerPictureFile", "/Users/domanduck/Downloads/jquery.js.jpg", ERROR_MSG_PICTURE_FILE);
 	}
 	
 	@Ignore//TODO(fix)
