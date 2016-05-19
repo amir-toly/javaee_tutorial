@@ -20,20 +20,6 @@ public abstract class OrdersListControllerTestBase extends ListControllerTestBas
 	
 	protected void insertElement(String[] orderInputs) {
 		
-		String[] fieldNames = new String[] {
-				"customerLastName",
-				"customerFirstName",
-				"customerAddress",
-				"customerPhoneNumber",
-				"customerEmailAddress",
-				"customerPictureFile",
-				"orderAmount",
-				"orderPaymentMethod",
-				"orderPaymentStatus",
-				"orderShippingMode",
-				"orderDeliveryStatus"
-		};
-		
 		driver.get(BASE_URL + "createOrder");
 		
 		List<WebElement> yesRadioButtons = driver.findElements(By.id("yes"));
@@ -43,7 +29,7 @@ public abstract class OrdersListControllerTestBase extends ListControllerTestBas
 			yesRadioButtons.get(0).click();
 		}
 		
-		AvoidDuplication.insertElement(driver, fieldNames, orderInputs);
+		insertElement(AvoidDuplication.orderFields, orderInputs);
 	}
 	
 	public void checkElement(String listKey, String[] orderInputs) {

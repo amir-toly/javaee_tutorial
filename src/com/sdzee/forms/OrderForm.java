@@ -52,9 +52,9 @@ public final class OrderForm extends BaseForm {
 			{
 				validateNewCustomer(newCustomer);
 			}
-			catch (Exception e)
+			catch (FormValidationException fve)
 			{
-				setError(PARAM_NEW_CUSTOMER, e.getMessage());
+				setError(PARAM_NEW_CUSTOMER, fve.getMessage());
 			}
 			
 			if (noChecked)
@@ -65,9 +65,9 @@ public final class OrderForm extends BaseForm {
 					
 					customer = customers.get(customerKey);
 				}
-				catch (Exception e)
+				catch (FormValidationException fve)
 				{
-					setError(PARAM_CUSTOMER_KEY, e.getMessage());
+					setError(PARAM_CUSTOMER_KEY, fve.getMessage());
 				}
 			}
 		}
@@ -106,9 +106,9 @@ public final class OrderForm extends BaseForm {
 		{
 			validatePaymentMethod(paymentMethod);
 		}
-		catch (Exception e)
+		catch (FormValidationException fve)
 		{
-			setError(PARAM_PAYMENT_METHOD, e.getMessage());
+			setError(PARAM_PAYMENT_METHOD, fve.getMessage());
 		}
 		order.setPaymentMethod(paymentMethod);
 		
@@ -116,9 +116,9 @@ public final class OrderForm extends BaseForm {
 		{
 			validatePaymentStatus(paymentStatus);
 		}
-		catch (Exception e)
+		catch (FormValidationException fve)
 		{
-			setError(PARAM_PAYMENT_STATUS, e.getMessage());
+			setError(PARAM_PAYMENT_STATUS, fve.getMessage());
 		}
 		order.setPaymentStatus(paymentStatus);
 		
@@ -126,9 +126,9 @@ public final class OrderForm extends BaseForm {
 		{
 			validateShippingMode(shippingMode);
 		}
-		catch (Exception e)
+		catch (FormValidationException fve)
 		{
-			setError(PARAM_SHIPPING_MODE, e.getMessage());
+			setError(PARAM_SHIPPING_MODE, fve.getMessage());
 		}
 		order.setShippingMode(shippingMode);
 		
@@ -136,9 +136,9 @@ public final class OrderForm extends BaseForm {
 		{
 			validateDeliveryStatus(deliveryStatus);
 		}
-		catch (Exception e)
+		catch (FormValidationException fve)
 		{
-			setError(PARAM_DELIVERY_STATUS, e.getMessage());
+			setError(PARAM_DELIVERY_STATUS, fve.getMessage());
 		}
 		order.setDeliveryStatus(deliveryStatus);
 		
@@ -158,7 +158,7 @@ public final class OrderForm extends BaseForm {
 	 * VALIDATION METHODS
 	 */
 	
-	private void validateNewCustomer(String newCustomer) throws Exception {
+	private void validateNewCustomer(String newCustomer) throws FormValidationException {
 		
 		if (NEW_CUSTOMER_VALUE_YES.equals(newCustomer))
 		{
@@ -170,32 +170,32 @@ public final class OrderForm extends BaseForm {
 		}
 		else
 		{
-			throw new Exception("The new customer attribute must be set to yes or no.");
+			throw new FormValidationException("The new customer attribute must be set to yes or no.");
 		}
 	}
 	
-	private void validateCustomerKey(String customerKey, Map<String, Customer> customers) throws Exception {
+	private void validateCustomerKey(String customerKey, Map<String, Customer> customers) throws FormValidationException {
 		
 		if (!customers.containsKey(customerKey))
 		{
-			throw new Exception("The selected customer must come from the list.");
+			throw new FormValidationException("The selected customer must come from the list.");
 		}
 	}
 	
-	private void validateAmount(String amount) throws Exception {
+	private void validateAmount(String amount) throws FormValidationException {
 		
 		if (amount == null || !amount.matches("\\d+(\\.\\d+)?"))
 		{
-			throw new Exception("The amount must be a positive decimal number.");
+			throw new FormValidationException("The amount must be a positive decimal number.");
 		}
 	}
 	
-	private void validatePaymentMethod(String paymentMethod) throws Exception {
+	private void validatePaymentMethod(String paymentMethod) throws FormValidationException {
 		
 		validateTwoCharactersLongField(paymentMethod, "payment method");
 	}
 	
-	private void validatePaymentStatus(String paymentStatus) throws Exception {
+	private void validatePaymentStatus(String paymentStatus) throws FormValidationException {
 		
 		if (paymentStatus != null)
 		{
@@ -203,12 +203,12 @@ public final class OrderForm extends BaseForm {
 		}
 	}
 	
-	private void validateShippingMode(String shippingMode) throws Exception {
+	private void validateShippingMode(String shippingMode) throws FormValidationException {
 		
 		validateTwoCharactersLongField(shippingMode, "shipping mode");
 	}
 	
-	private void validateDeliveryStatus(String deliveryStatus) throws Exception {
+	private void validateDeliveryStatus(String deliveryStatus) throws FormValidationException {
 		
 		if (deliveryStatus != null)
 		{

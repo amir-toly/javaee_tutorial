@@ -18,7 +18,7 @@ public abstract class CustomersListControllerTestBase extends ListControllerTest
 		
 		driver.get(BASE_URL + "createCustomer");
 		
-		AvoidDuplication.insertElement(driver, AvoidDuplication.customerFields, customerInputs);
+		insertElement(AvoidDuplication.customerFields, customerInputs);
 	}
 	
 	public void checkElement(String listKey, String[] customerInputs) {

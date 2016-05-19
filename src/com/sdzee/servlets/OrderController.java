@@ -36,13 +36,11 @@ public class OrderController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		String path = this.getServletConfig().getInitParameter("path");
-		
 		/* Create form */
 		OrderForm form = new OrderForm();
 		
 		/* Retrieve bean from form processing */
-		Order order = form.createOrder(req, path);
+		Order order = form.createOrder(req, AvoidDuplication.getPath(this));
 		
 		/* Save bean and form in req object */
 		req.setAttribute(ATT_FORM, form);

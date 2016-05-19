@@ -1,5 +1,6 @@
 package com.sdzee.servlets;
 
+import org.hamcrest.core.StringEndsWith;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -191,6 +192,49 @@ public class OrderControllerTest extends FormControllerTestBase {
 		checkErrorMsgForInput("orderDeliveryStatus", "D", ERROR_MSG_DELIVERY_STATUS);
 	}
 	
+	@Test
+	public void testDisplayPage() {
+		
+		String[] elementInputs = new String[] {
+				"Martin",
+				"Pierre",
+				"6 avenue du Parc, Lyon",
+				"0488776655",
+				"pmartin@mail.com",
+				"/Users/domanduck/Downloads/delete.png",
+				"1234.56",
+				"Credit card",
+				"Confirmed",
+				"UPS",
+				"Delivered"
+		};
+		
+		insertElement(AvoidDuplication.orderFields, elementInputs);
+		
+		int htmlParagraphsIdx = 2; // The first paragraph we want to check is the 3rd one
+		
+		for (int elementInputsIdx = 0; elementInputsIdx < elementInputs.length; elementInputsIdx++)
+		{
+			String currentInput = elementInputs[elementInputsIdx];
+			
+			if (elementInputsIdx == 5) // Picture name => get only the filename
+			{
+				currentInput = currentInput.substring(currentInput.lastIndexOf('/') + 1);
+			}
+			
+			if (htmlParagraphsIdx == 8) // We want to skip the 9th ('Order' text) and 10th (date field) paragraphs
+			{
+				htmlParagraphsIdx = 11;
+			}
+			else
+			{
+				htmlParagraphsIdx++;
+			}
+			
+			Assert.assertThat(driver.findElement(By.xpath("//div[@id='content']/p[" + htmlParagraphsIdx + "]")).getText(), StringEndsWith.endsWith(currentInput));
+		}
+	}
+	
 	/**
 	 * Creates a customer in session
 	 */
@@ -207,7 +251,7 @@ public class OrderControllerTest extends FormControllerTestBase {
 		
 		driver.get(BASE_URL + "createCustomer");
 		
-		AvoidDuplication.insertElement(driver, AvoidDuplication.customerFields, one);
+		insertElement(AvoidDuplication.customerFields, one);
 		
 		driver.get(BASE_URL + "createOrder");
 	}

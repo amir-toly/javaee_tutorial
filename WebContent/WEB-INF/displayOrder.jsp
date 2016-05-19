@@ -40,6 +40,10 @@
 				<c:out value="${ requestScope.order.customer.email }" />
 			</p>
 			<p>
+				Picture name:
+				<c:out value="${ requestScope.order.customer.pictureName }" />
+			</p>
+			<p>
 				Order
 			</p>
 			<p>

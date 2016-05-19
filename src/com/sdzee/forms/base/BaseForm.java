@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.sdzee.forms.FormValidationException;
+
 /**
  * Parent class for forms
  * @author amir-toly
@@ -53,11 +55,11 @@ public abstract class BaseForm {
 		errors.put(fieldName, message);
 	}
 	
-	protected void validateTwoCharactersLongField(String fieldValue, String fieldLabel) throws Exception {
+	protected void validateTwoCharactersLongField(String fieldValue, String fieldLabel) throws FormValidationException {
 		
 		if (fieldValue == null || fieldValue.length() < 2)
 		{
-			throw new Exception("The " + fieldLabel + " must contain at least 2 characters.");
+			throw new FormValidationException("The " + fieldLabel + " must contain at least 2 characters.");
 		}
 	}
 }

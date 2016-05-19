@@ -35,19 +35,17 @@ public final class CustomerForm extends BaseForm {
 		String address = getParamValue(request, PARAM_ADDRESS);
 		String phoneNumber = getParamValue(request, PARAM_PHONE_NUMBER);
 		String emailAddress = getParamValue(request, PARAM_EMAIL_ADDRESS);
-		String pictureName = saveFile(request, path);
+		String pictureName = null;
 		
 		Customer customer = new Customer();
-		
-		customer.setPictureName(pictureName);
 		
 		try
 		{
 			validateLastName(lastName);
 		}
-		catch (Exception e)
+		catch (FormValidationException fve)
 		{
-			setError(PARAM_LAST_NAME, e.getMessage());
+			setError(PARAM_LAST_NAME, fve.getMessage());
 		}
 		customer.setLastName(lastName);
 		
@@ -55,9 +53,9 @@ public final class CustomerForm extends BaseForm {
 		{
 			validateFirstName(firstName);
 		}
-		catch (Exception e)
+		catch (FormValidationException fve)
 		{
-			setError(PARAM_FIRST_NAME, e.getMessage());
+			setError(PARAM_FIRST_NAME, fve.getMessage());
 		}
 		customer.setFirstName(firstName);
 		
@@ -65,9 +63,9 @@ public final class CustomerForm extends BaseForm {
 		{
 			validateAddress(address);
 		}
-		catch (Exception e)
+		catch (FormValidationException fve)
 		{
-			setError(PARAM_ADDRESS, e.getMessage());
+			setError(PARAM_ADDRESS, fve.getMessage());
 		}
 		customer.setAddress(address);
 		
@@ -75,9 +73,9 @@ public final class CustomerForm extends BaseForm {
 		{
 			validatePhoneNumber(phoneNumber);
 		}
-		catch (Exception e)
+		catch (FormValidationException fve)
 		{
-			setError(PARAM_PHONE_NUMBER, e.getMessage());
+			setError(PARAM_PHONE_NUMBER, fve.getMessage());
 		}
 		customer.setPhoneNumber(phoneNumber);
 		
@@ -85,11 +83,21 @@ public final class CustomerForm extends BaseForm {
 		{
 			validateEmail(emailAddress);
 		}
-		catch (Exception e)
+		catch (FormValidationException fve)
 		{
-			setError(PARAM_EMAIL_ADDRESS, e.getMessage());
+			setError(PARAM_EMAIL_ADDRESS, fve.getMessage());
 		}
 		customer.setEmail(emailAddress);
+		
+		try
+		{
+			pictureName = validatePictureFile(request, path);
+		}
+		catch (FormValidationException fve)
+		{
+			setError(PARAM_PICTURE_FILE, fve.getMessage());
+		}
+		customer.setPictureName(pictureName);
 		
 		if (errors.isEmpty())
 		{
@@ -107,12 +115,12 @@ public final class CustomerForm extends BaseForm {
 	 * VALIDATION METHODS
 	 */
 	
-	private void validateLastName(String lastName) throws Exception {
+	private void validateLastName(String lastName) throws FormValidationException {
 		
 		validateTwoCharactersLongField(lastName, "last name");
 	}
 	
-	private void validateFirstName(String firstName) throws Exception {
+	private void validateFirstName(String firstName) throws FormValidationException {
 		
 		if (firstName != null)
 		{
@@ -120,46 +128,31 @@ public final class CustomerForm extends BaseForm {
 		}
 	}
 	
-	private void validateAddress(String address) throws Exception {
+	private void validateAddress(String address) throws FormValidationException {
 		
 		if (address == null || address.length() < 10)
 		{
-			throw new Exception("The address must contain at least 10 characters.");
+			throw new FormValidationException("The address must contain at least 10 characters.");
 		}
 	}
 	
-	private void validatePhoneNumber(String phoneNumber) throws Exception {
+	private void validatePhoneNumber(String phoneNumber) throws FormValidationException {
 		
 		if (phoneNumber == null || !phoneNumber.matches("\\d{4,}"))
 		{
-			throw new Exception("The phone number must contain numbers (at least 4) only.");
+			throw new FormValidationException("The phone number must contain numbers (at least 4) only.");
 		}
 	}
 	
-	private void validateEmail(String email) throws Exception {
+	private void validateEmail(String email) throws FormValidationException {
 		
 		if (email != null && !email.matches("([^.@]+)(\\.[^.@]+)*@([^.@]+\\.)+([^.@]+)"))
 		{
-			throw new Exception("The email address must be valid.");
+			throw new FormValidationException("The email address must be valid.");
 		}
 	}
 	
-	private void validatePictureFile(InputStream fileContent) throws Exception {
-		
-		MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-		Collection<?> mimeTypes = MimeUtil.getMimeTypes(fileContent);
-		
-		if (!mimeTypes.toString().startsWith("image"))
-		{
-			throw new Exception("The picture file must match an image type.");
-		}
-	}
-	
-	/**
-	 * OTHER METHODS
-	 */
-	
-	private String saveFile(HttpServletRequest request, String path) {
+	private String validatePictureFile(HttpServletRequest request, String path) throws FormValidationException {
 		
 		String filename = null;
 		InputStream fileContent = null;
@@ -181,50 +174,42 @@ public final class CustomerForm extends BaseForm {
 						.substring(filename.lastIndexOf('\\') + 1);
 				
 				fileContent = part.getInputStream();
+				
+				MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
+				Collection<?> mimeTypes = MimeUtil.getMimeTypes(fileContent);
+				
+				if (mimeTypes.toString().startsWith("image"))
+				{
+					writeFile(fileContent, filename, path);
+				}
+				else
+				{
+					throw new FormValidationException("The picture file must match an image type.");
+				}
 			}
 		}
 		catch (IllegalStateException ise)
 		{
-			setError(PARAM_PICTURE_FILE, "The file is too big (1MB max).");
+			ise.printStackTrace();
+			throw new FormValidationException("The file is too big (1MB max).");
 		}
 		catch (IOException ioe)
 		{
-			setError(PARAM_PICTURE_FILE, "Error from the server configuration.");
+			ioe.printStackTrace();
+			throw new FormValidationException("Error from the server configuration.");
 		}
 		catch (ServletException se)
 		{
-			setError(PARAM_PICTURE_FILE, "Request not supported. Expected: multipart/form-data.");
-		}
-		
-		if (filename != null && fileContent != null) // If there is actually a file, let's proceed!
-		{
-			if (errors.isEmpty())
-			{
-				try
-				{
-					validatePictureFile(fileContent);
-				}
-				catch (Exception e)
-				{
-					setError(PARAM_PICTURE_FILE, e.getMessage());
-				}
-			}
-			
-			if (errors.isEmpty())
-			{
-				try
-				{
-					writeFile(fileContent, filename, path);
-				}
-				catch (Exception e)
-				{
-					setError(PARAM_PICTURE_FILE, "Error while writing file on disk.");
-				}
-			}
+			se.printStackTrace();
+			throw new FormValidationException("Request not supported. Expected: multipart/form-data.");
 		}
 		
 		return filename;
 	}
+	
+	/**
+	 * OTHER METHODS
+	 */
 	
 	private String getFilename(Part part) {
 		
@@ -241,7 +226,7 @@ public final class CustomerForm extends BaseForm {
 		return null;
 	}
 	
-	private void writeFile(InputStream fileContent, String filename, String path) throws Exception {
+	private void writeFile(InputStream fileContent, String filename, String path) throws FormValidationException {
 		
 		BufferedInputStream input = null;
 		BufferedOutputStream output = null;
@@ -260,6 +245,10 @@ public final class CustomerForm extends BaseForm {
 			{
 				output.write(buffer, 0, length);
 			}
+		}
+		catch (Exception e)
+		{
+			throw new FormValidationException("Error while writing file on disk.");
 		}
 		finally
 		{

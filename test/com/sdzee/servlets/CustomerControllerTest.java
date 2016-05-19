@@ -1,10 +1,14 @@
 package com.sdzee.servlets;
 
+import org.hamcrest.core.StringEndsWith;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openqa.selenium.By;
 
 import com.sdzee.servlets.base.FormControllerTestBase;
+import com.sdzee.servlets.testutil.AvoidDuplication;
 
 public class CustomerControllerTest extends FormControllerTestBase {
 
@@ -124,7 +128,7 @@ public class CustomerControllerTest extends FormControllerTestBase {
 	@Test
 	public void testPictureFileTooBig() {
 		
-		checkErrorMsgForInput("cusomerPictureFile", "/Users/domanduck/Downloads/apache-tomcat-7.0.65.zip", ERROR_MSG_PICTURE_FILE_TOO_BIG);
+		checkErrorMsgForInput("customerPictureFile", "/Users/domanduck/Downloads/apache-tomcat-7.0.65.zip", ERROR_MSG_PICTURE_FILE_TOO_BIG);
 	}
 	
 	@Test
@@ -143,5 +147,32 @@ public class CustomerControllerTest extends FormControllerTestBase {
 	@Ignore//TODO(manually for now)
 	@Test
 	public void testPictureFileWritingError() {
+	}
+	
+	@Test
+	public void testDisplayPage() {
+		
+		String[] elementInputs = new String[] {
+				"Martin",
+				"Pierre",
+				"6 avenue du Parc, Lyon",
+				"0488776655",
+				"pmartin@mail.com",
+				"/Users/domanduck/Downloads/delete.png"
+		};
+		
+		insertElement(AvoidDuplication.customerFields, elementInputs);
+		
+		for (int i = 0; i < elementInputs.length; i++)
+		{
+			String currentInput = elementInputs[i];
+			
+			if (i == 5) // Picture name => get only the filename
+			{
+				currentInput = currentInput.substring(currentInput.lastIndexOf('/') + 1);
+			}
+			
+			Assert.assertThat(driver.findElement(By.xpath("//div[@id='content']/p[" + (i + 2) + "]")).getText(), StringEndsWith.endsWith(currentInput));
+		}
 	}
 }

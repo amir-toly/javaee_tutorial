@@ -33,8 +33,12 @@
 								<td><c:out value="${ customer.value.phoneNumber }"></c:out></td>
 								<td><c:out value="${ customer.value.email }"></c:out></td>
 								<td>
-									<c:if test="${ !empty customer.value.pictureName }">
-										<a href='<c:url value="/files/${ customer.value.pictureName }" />'>Here</a>
+									<c:set var="pictureName">
+										<c:out value="${ customer.value.pictureName }" />
+									</c:set>
+									
+									<c:if test="${ !empty pictureName }">
+										<a href='<c:url value="/files/${ pictureName }" />'>Here</a>
 									</c:if>
 								</td>
 								
