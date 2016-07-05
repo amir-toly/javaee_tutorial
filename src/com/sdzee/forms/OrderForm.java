@@ -143,11 +143,11 @@ public final class OrderForm extends BaseForm {
 		
 		if (errors.isEmpty())
 		{
-			result = "Customer created successfully!";
+			result = "Order created successfully!";
 		}
 		else
 		{
-			result = "Customer not created.";
+			result = "Order not created.";
 		}
 		
 		return order;
