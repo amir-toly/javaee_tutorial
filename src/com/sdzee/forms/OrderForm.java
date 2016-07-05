@@ -41,6 +41,13 @@ public final class OrderForm extends BaseForm {
 			customersInSession = true;
 		}
 		
+		String amount = getParamValue(request, PARAM_AMOUNT);
+		String paymentMethod = getParamValue(request, PARAM_PAYMENT_METHOD);
+		String paymentStatus = getParamValue(request, PARAM_PAYMENT_STATUS);
+		String shippingMode = getParamValue(request, PARAM_SHIPPING_MODE);
+		String deliveryStatus = getParamValue(request, PARAM_DELIVERY_STATUS);
+		
+		Order order = new Order();
 		Customer customer = null;
 		
 		if (customersInSession)
@@ -79,14 +86,6 @@ public final class OrderForm extends BaseForm {
 			customer = customerForm.createCustomer(request, path);
 			errors.putAll(customerForm.getErrors());
 		}
-		
-		String amount = getParamValue(request, PARAM_AMOUNT);
-		String paymentMethod = getParamValue(request, PARAM_PAYMENT_METHOD);
-		String paymentStatus = getParamValue(request, PARAM_PAYMENT_STATUS);
-		String shippingMode = getParamValue(request, PARAM_SHIPPING_MODE);
-		String deliveryStatus = getParamValue(request, PARAM_DELIVERY_STATUS);
-		
-		Order order = new Order();
 		
 		order.setCustomer(customer);
 		order.setDate(DateTime.now().toString(DATE_FORMAT));
