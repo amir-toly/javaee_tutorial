@@ -9,7 +9,7 @@ import com.sdzee.servlets.base.OrdersListControllerTestBase;
 
 public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 
-	private String[] coyote = new String[] {
+	private String[] coyoteOrder = new String[] {
 			"Coyote",
 			"",
 			"Pékin, Chine",
@@ -28,7 +28,7 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 		
 		super.deleteAllElements();
 		
-		insertElement(coyote);
+		insertElement(coyoteOrder);
 	}
 	
 	@Test
@@ -36,7 +36,7 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 		
 		driver.get(BASE_URL + "deleteOrder");
 		
-		checkElement(coyote[0], coyote);
+		checkElement(coyoteOrder[0], coyoteOrder);
 	}
 	
 	@Test
@@ -44,7 +44,7 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 		
 		driver.get(BASE_URL + "deleteOrder?orderKey");
 		
-		checkElement(coyote[0], coyote);
+		checkElement(coyoteOrder[0], coyoteOrder);
 	}
 	
 	@Test
@@ -52,7 +52,7 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 		
 		driver.get(BASE_URL + "deleteOrder?orderKey=NonExisting");
 		
-		checkElement(coyote[0], coyote);
+		checkElement(coyoteOrder[0], coyoteOrder);
 	}
 	
 	@Test
@@ -60,7 +60,7 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 		
 		driver.get(BASE_URL + "listOrders");
 		
-		String orderDate = driver.findElement(By.xpath("//td[contains(text(), '" + coyote[0] + "')]/../td[2]")).getText();
+		String orderDate = driver.findElement(By.xpath("//td[contains(text(), '" + coyoteOrder[0] + "')]/../td[2]")).getText();
 		
 		driver.get(BASE_URL + "deleteOrder?orderKey=" + orderDate);
 		
