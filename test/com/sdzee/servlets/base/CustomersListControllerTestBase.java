@@ -1,5 +1,6 @@
 package com.sdzee.servlets.base;
 
+import org.hamcrest.core.StringEndsWith;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 
@@ -23,9 +24,24 @@ public abstract class CustomersListControllerTestBase extends ListControllerTest
 	
 	public void checkElement(String listKey, String[] customerInputs) {
 		
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < customerInputs.length; i++)
 		{
-			Assert.assertEquals(customerInputs[i], driver.findElement(By.xpath("//td[contains(text(), '" + listKey + "')]/../td[" + (i + 1) + "]")).getText());
+			String currentInput = customerInputs[i];
+			
+			if (!currentInput.isEmpty() && i == 5) // Picture name => get only the filename
+			{
+				currentInput = currentInput.substring(currentInput.lastIndexOf('/') + 1);
+				
+				Assert.assertEquals("Here", driver.findElement(By.xpath("//td[contains(text(), '" + listKey + "')]/../td[" + (i + 1) + "]//a")).getText());
+				Assert.assertThat(
+						driver.findElement(By.xpath("//td[contains(text(), '" + listKey + "')]/../td[" + (i + 1) + "]//a")).getAttribute("href"),
+						StringEndsWith.endsWith(currentInput)
+				);
+			}
+			else
+			{
+				Assert.assertEquals(currentInput, driver.findElement(By.xpath("//td[contains(text(), '" + listKey + "')]/../td[" + (i + 1) + "]")).getText());
+			}
 		}
 	}
 }
