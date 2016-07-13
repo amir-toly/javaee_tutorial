@@ -1,11 +1,9 @@
 package com.sdzee.servlets.base;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import com.sdzee.servlets.testutil.AvoidDuplication;
 
@@ -21,13 +19,6 @@ public abstract class OrdersListControllerTestBase extends ListControllerTestBas
 	protected void insertElement(String[] orderInputs) {
 		
 		driver.get(BASE_URL + "createOrder");
-		
-		List<WebElement> yesRadioButtons = driver.findElements(By.id("yes"));
-		
-		if (!yesRadioButtons.isEmpty())
-		{
-			yesRadioButtons.get(0).click();
-		}
 		
 		insertElement(AvoidDuplication.orderFields, orderInputs);
 	}

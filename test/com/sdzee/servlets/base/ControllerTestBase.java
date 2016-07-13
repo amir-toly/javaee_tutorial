@@ -1,9 +1,12 @@
 package com.sdzee.servlets.base;
 
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public abstract class ControllerTestBase {
@@ -24,6 +27,13 @@ public abstract class ControllerTestBase {
 	}
 	
 	protected void insertElement(String[] fieldNames, String[] elementInputs) {
+		
+		List<WebElement> yesRadioButtons = driver.findElements(By.id("yes"));
+		
+		if (!yesRadioButtons.isEmpty())
+		{
+			yesRadioButtons.get(0).click();
+		}
 		
 		for (int i = 0; i < elementInputs.length; i++)
 		{
