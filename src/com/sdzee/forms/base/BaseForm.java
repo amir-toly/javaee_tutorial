@@ -31,7 +31,7 @@ public abstract class BaseForm {
 	 * @param paramName
 	 * @return String
 	 */
-	protected static String getParamValue(HttpServletRequest request, String paramName) {
+	protected String getParamValue(HttpServletRequest request, String paramName) {
 		
 		String value = request.getParameter(paramName);
 		
