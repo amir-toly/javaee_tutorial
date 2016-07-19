@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 public abstract class ListControllerTestBase extends ControllerTestBase implements ICheckListElement {
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		
 		deleteAllElements();
 	}

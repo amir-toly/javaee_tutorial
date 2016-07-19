@@ -7,6 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.sdzee.beans.Order;
 import com.sdzee.servlets.base.FormControllerTestBase;
 import com.sdzee.servlets.testutil.AvoidDuplication;
 
@@ -64,18 +65,19 @@ public class OrderControllerTest extends FormControllerTestBase {
 	@Test
 	public void testNewCustomerNo() {
 		
+		String optionDisplayedText = "First One";
 		testNewCustomerNoSetUp();
 		
 		Assert.assertTrue(driver.findElement(By.id("existingCustomer")).isDisplayed());
 		Assert.assertFalse(driver.findElement(By.id("newCustomer")).isDisplayed());
 		
-		driver.findElement(By.name("customerKey")).sendKeys("First One");
+		driver.findElement(By.name("customerKey")).sendKeys(optionDisplayedText);
 		
 		driver.findElement(By.xpath("//input[@type='submit']")).click();
 		
 		// Check that No and the chosen customer are still selected when the form is submitted with errors
 		Assert.assertTrue(driver.findElement(By.id("no")).isSelected());
-		Assert.assertTrue(driver.findElement(By.xpath("//option[@value='One']")).isSelected());
+		Assert.assertTrue(driver.findElement(By.xpath("//option[contains(text(), '" + optionDisplayedText + "')]")).isSelected());
 	}
 	
 	@Test
@@ -193,7 +195,7 @@ public class OrderControllerTest extends FormControllerTestBase {
 	}
 	
 	@Test
-	public void testDisplayPage() {
+	public void testDisplayPage() throws Exception {
 		
 		String[] elementInputs = new String[] {
 				"Martin",
@@ -210,6 +212,7 @@ public class OrderControllerTest extends FormControllerTestBase {
 		};
 		
 		insertElement(AvoidDuplication.orderFields, elementInputs);
+		Order orderFromMartinFromDb = AvoidDuplication.getOrderFromDb(null);
 		
 		int htmlParagraphsIdx = 2; // The first paragraph we want to check is the 3rd one
 		
@@ -233,6 +236,12 @@ public class OrderControllerTest extends FormControllerTestBase {
 			
 			Assert.assertThat(driver.findElement(By.xpath("//div[@id='content']/p[" + htmlParagraphsIdx + "]")).getText(), StringEndsWith.endsWith(currentInput));
 		}
+		
+		// We no longer need Martin's order...
+		driver.get(BASE_URL + "deleteOrder?orderKey=" + orderFromMartinFromDb.getId());
+		
+		// ... Neither Martin himself
+		driver.get(BASE_URL + "deleteCustomer?customerKey=" + orderFromMartinFromDb.getCustomer().getId());
 	}
 	
 	/**

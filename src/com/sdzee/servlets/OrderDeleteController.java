@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.sdzee.beans.Order;
+import com.sdzee.dao.impl.DAOFactory;
 
 public class OrderDeleteController extends HttpServlet {
 	
@@ -29,6 +30,13 @@ public class OrderDeleteController extends HttpServlet {
 		if (orders != null)
 		{
 			orders.remove(orderKey);
+			
+			try
+			{
+				DAOFactory.getInstance().getOrderDao().delete(Long.valueOf(orderKey));
+			}
+			catch (NumberFormatException ignore)
+			{}
 		}
 		
 		resp.sendRedirect(req.getContextPath() + VIEW);

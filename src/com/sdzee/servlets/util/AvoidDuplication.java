@@ -27,7 +27,7 @@ public class AvoidDuplication {
 			session.setAttribute(SESS_ATT_CUSTOMERS, customers);
 		}
 		
-		customers.put(customer.getLastName(), customer);
+		customers.put(customer.getId().toString(), customer);
 	}
 	
 	public static String getPath(HttpServlet httpServlet) {

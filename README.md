@@ -5,6 +5,7 @@ Tools:
 - Tomcat 7.0.65
 
 Steps:
+- Create the directory /tmp/sdzee/files
 - Import from Git > Projects from Git as a Dynamic Web Project to deploy in Tomcat
 - Run the project on Tomcat
 - Go on http://localhost:8080/<PROJECT_NAME>/listOrders

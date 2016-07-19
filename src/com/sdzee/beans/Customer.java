@@ -2,12 +2,21 @@ package com.sdzee.beans;
 
 public class Customer {
 
+	private Long id;
 	private String lastName;
 	private String firstName;
 	private String address;
 	private String phoneNumber;
 	private String email;
 	private String pictureName;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getLastName() {
 		return lastName;

@@ -1,10 +1,13 @@
 package com.sdzee.servlets;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.sdzee.beans.Order;
 import com.sdzee.servlets.base.OrdersListControllerTestBase;
+import com.sdzee.servlets.testutil.AvoidDuplication;
 
 public class OrdersListControllerTest extends OrdersListControllerTestBase {
 
@@ -15,7 +18,7 @@ public class OrdersListControllerTest extends OrdersListControllerTestBase {
 	}
 	
 	@Test
-	public void testTwoOrders() {
+	public void testTwoOrders() throws Exception {
 		
 		String[] one = new String[] {
 				"One",
@@ -46,12 +49,26 @@ public class OrdersListControllerTest extends OrdersListControllerTestBase {
 		};
 		
 		insertElement(one);
+		Order oneFromDb = AvoidDuplication.getOrderFromDb(null);
+		
 		insertElement(two);
+		Order twoFromDb = AvoidDuplication.getOrderFromDb(null);
 		
 		driver.get(BASE_URL + "listOrders");
 		
-		checkElement(one[0], one);
-		checkElement(two[0], two);
+		checkElement(oneFromDb, one);
+		checkElement(twoFromDb, two);
+	}
+	
+	@Ignore//TODO(how to test this?)
+	@Test
+	public void testTwoOrdersAtTheSameDate() {
+		
+	}
+	
+	@Ignore//TODO(manually for now)
+	@Test
+	public void testOrdersFromSessionOnly() {
 	}
 
 }

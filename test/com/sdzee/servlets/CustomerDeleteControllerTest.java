@@ -5,7 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.sdzee.beans.Customer;
 import com.sdzee.servlets.base.CustomersListControllerTestBase;
+import com.sdzee.servlets.testutil.AvoidDuplication;
 
 public class CustomerDeleteControllerTest extends CustomersListControllerTestBase {
 
@@ -18,12 +20,15 @@ public class CustomerDeleteControllerTest extends CustomersListControllerTestBas
 			""
 	};
 	
+	private Customer coyoteFromDb = null;
+	
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		
 		super.deleteAllElements();
 		
 		insertElement(coyote);
+		coyoteFromDb = AvoidDuplication.getCustomerFromDb(null);
 	}
 	
 	@Test
@@ -31,7 +36,7 @@ public class CustomerDeleteControllerTest extends CustomersListControllerTestBas
 		
 		driver.get(BASE_URL + "deleteCustomer");
 		
-		checkElement(coyote[0], coyote);
+		checkElement(coyoteFromDb, coyote);
 	}
 	
 	@Test
@@ -39,7 +44,7 @@ public class CustomerDeleteControllerTest extends CustomersListControllerTestBas
 		
 		driver.get(BASE_URL + "deleteCustomer?customerKey");
 		
-		checkElement(coyote[0], coyote);
+		checkElement(coyoteFromDb, coyote);
 	}
 	
 	@Test
@@ -47,15 +52,16 @@ public class CustomerDeleteControllerTest extends CustomersListControllerTestBas
 		
 		driver.get(BASE_URL + "deleteCustomer?customerKey=NonExisting");
 		
-		checkElement(coyote[0], coyote);
+		checkElement(coyoteFromDb, coyote);
 	}
 	
 	@Test
-	public void testDeleteCoyoteKey() {
+	public void testDeleteIdAsKey() throws Exception {
 		
-		driver.get(BASE_URL + "deleteCustomer?customerKey=Coyote");
+		driver.get(BASE_URL + "deleteCustomer?customerKey=" + coyoteFromDb.getId());
 		
 		Assert.assertEquals("No customers created.", driver.findElement(By.xpath("//p[@class='error']")).getText());
+		Assert.assertNull(AvoidDuplication.getCustomerFromDb(coyoteFromDb.getId().toString()));
 	}
 
 }

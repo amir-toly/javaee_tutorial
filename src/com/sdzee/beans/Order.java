@@ -1,8 +1,11 @@
 package com.sdzee.beans;
 
+import java.sql.Timestamp;
+
 public class Order {
 
-	private String date;
+	private Long id;
+	private Timestamp date;
 	private double amount;
 	private String paymentMethod;
 	private String paymentStatus;
@@ -11,11 +14,19 @@ public class Order {
 	
 	private Customer customer;
 
-	public String getDate() {
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Timestamp getDate() {
 		return date;
 	}
 
-	public void setDate(String date) {
+	public void setDate(Timestamp date) {
 		this.date = date;
 	}
 

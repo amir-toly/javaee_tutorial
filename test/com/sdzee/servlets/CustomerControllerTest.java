@@ -7,6 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.sdzee.beans.Customer;
 import com.sdzee.servlets.base.FormControllerTestBase;
 import com.sdzee.servlets.testutil.AvoidDuplication;
 
@@ -16,7 +17,7 @@ public class CustomerControllerTest extends FormControllerTestBase {
 	private static String ERROR_MSG_FIRST_NAME = "The first name must contain at least 2 characters.";
 	private static String ERROR_MSG_ADDRESS = "The address must contain at least 10 characters.";
 	private static String ERROR_MSG_PHONE_NUMBER = "The phone number must contain numbers (at least 4) only.";
-	private static String ERROR_MSG_EMAIL = "The email address must be valid.";
+	private static String ERROR_MSG_EMAIL = "The email address must be valid and not already in use.";
 	private static String ERROR_MSG_PICTURE_FILE_TOO_BIG = "The file is too big (1MB max).";
 	private static String ERROR_MSG_PICTURE_FILE_REQ_NOT_SUPPORTED = "Request not supported. Expected: multipart/form-data.";
 	private static String ERROR_MSG_PICTURE_FILE = "The picture file must match an image type.";
@@ -117,6 +118,13 @@ public class CustomerControllerTest extends FormControllerTestBase {
 		checkErrorMsgForInput("customerEmailAddress", "mail@me", ERROR_MSG_EMAIL);
 	}
 	
+	@Test
+	public void testEmailAlreadyInUse() {
+		
+		// The email "two.second@mail.com" is part of the app's bootstrapping dataset
+		checkErrorMsgForInput("customerEmailAddress", "two.second@mail.com", ERROR_MSG_EMAIL);
+	}
+	
 	@Ignore//TODO(fix comparison)
 	@Test
 	public void testPictureFileWrongType() {
@@ -144,13 +152,13 @@ public class CustomerControllerTest extends FormControllerTestBase {
 	public void testPictureFileSrvConfError() {
 	}
 	
-	@Ignore//TODO(manually for now)
+	@Ignore//TODO(how to test this?)
 	@Test
 	public void testPictureFileWritingError() {
 	}
 	
 	@Test
-	public void testDisplayPage() {
+	public void testDisplayPage() throws Exception {
 		
 		String[] elementInputs = new String[] {
 				"Martin",
@@ -162,6 +170,7 @@ public class CustomerControllerTest extends FormControllerTestBase {
 		};
 		
 		insertElement(AvoidDuplication.customerFields, elementInputs);
+		Customer martinFromDb = AvoidDuplication.getCustomerFromDb(null);
 		
 		for (int i = 0; i < elementInputs.length; i++)
 		{
@@ -174,5 +183,8 @@ public class CustomerControllerTest extends FormControllerTestBase {
 			
 			Assert.assertThat(driver.findElement(By.xpath("//div[@id='content']/p[" + (i + 2) + "]")).getText(), StringEndsWith.endsWith(currentInput));
 		}
+		
+		// We no longer need Martin
+		driver.get(BASE_URL + "deleteCustomer?customerKey=" + martinFromDb.getId());
 	}
 }

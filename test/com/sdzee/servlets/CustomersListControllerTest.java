@@ -1,10 +1,13 @@
 package com.sdzee.servlets;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.sdzee.beans.Customer;
 import com.sdzee.servlets.base.CustomersListControllerTestBase;
+import com.sdzee.servlets.testutil.AvoidDuplication;
 
 public class CustomersListControllerTest extends CustomersListControllerTestBase {
 
@@ -15,11 +18,23 @@ public class CustomersListControllerTest extends CustomersListControllerTestBase
 	}
 	
 	@Test
-	public void testThreeCustomers() {
+	public void testThreeCustomers() throws Exception {
 		
 		String[] one = new String[] {
 				"One",
 				"First",
+				"1st Avenue",
+				"0101010101",
+				"",
+				""
+		};
+		
+		/**
+		 * Shows that we can save two customers with the same last name
+		 */
+		String[] oneAgain = new String[] {
+				"One",
+				"Again",
 				"1st Avenue",
 				"0101010101",
 				"",
@@ -45,14 +60,28 @@ public class CustomersListControllerTest extends CustomersListControllerTestBase
 		};
 		
 		insertElement(one);
+		Customer oneFromDb = AvoidDuplication.getCustomerFromDb(null);
+		
+		insertElement(oneAgain);
+		Customer oneAgainFromDb = AvoidDuplication.getCustomerFromDb(null);
+		
 		insertElement(two);
+		Customer twoFromDb = AvoidDuplication.getCustomerFromDb(null);
+		
 		insertElement(three);
+		Customer threeFromDb = AvoidDuplication.getCustomerFromDb(null);
 		
 		driver.get(BASE_URL + "listCustomers");
 		
-		checkElement(one[0], one);
-		checkElement(two[0], two);
-		checkElement(three[0], three);
+		checkElement(oneFromDb, one);
+		checkElement(oneAgainFromDb, oneAgain);
+		checkElement(twoFromDb, two);
+		checkElement(threeFromDb, three);
+	}
+	
+	@Ignore//TODO(manually for now)
+	@Test
+	public void testCustomersFromSessionOnly() {
 	}
 
 }

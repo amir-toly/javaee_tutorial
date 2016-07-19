@@ -11,10 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.sdzee.beans.Order;
+import com.sdzee.dao.OrderDao;
+import com.sdzee.dao.impl.DAOFactory;
 import com.sdzee.forms.OrderForm;
 import com.sdzee.servlets.util.AvoidDuplication;
 
 public class OrderController extends HttpServlet {
+	
+	public static final String CONF_DAO_FACTORY = "daoFactory";
 	
 	public static final String ATT_FORM = "form";
 	public static final String ATT_ORDER = "order";
@@ -22,8 +26,16 @@ public class OrderController extends HttpServlet {
 	
 	public static final String VIEW_FORM = "/WEB-INF/createOrder.jsp";
 	public static final String VIEW_RESULT = "/WEB-INF/displayOrder.jsp";
+	
+	private OrderDao orderDao;
 
 	private static final long serialVersionUID = 2592998444053332359L;
+	
+	@Override
+	public void init() throws ServletException {
+		
+		this.orderDao = ((DAOFactory) getServletContext().getAttribute(CONF_DAO_FACTORY)).getOrderDao();
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -37,7 +49,7 @@ public class OrderController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		/* Create form */
-		OrderForm form = new OrderForm();
+		OrderForm form = new OrderForm(orderDao);
 		
 		/* Retrieve bean from form processing */
 		Order order = form.createOrder(req, AvoidDuplication.getPath(this));
@@ -60,7 +72,7 @@ public class OrderController extends HttpServlet {
 				session.setAttribute(SESS_ATT_ORDERS, orders);
 			}
 			
-			orders.put(order.getDate(), order);
+			orders.put(order.getId().toString(), order);
 			
 			this.getServletContext().getRequestDispatcher(VIEW_RESULT).forward(req, resp);
 		}

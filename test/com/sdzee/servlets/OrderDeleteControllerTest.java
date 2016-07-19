@@ -5,7 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.sdzee.beans.Order;
 import com.sdzee.servlets.base.OrdersListControllerTestBase;
+import com.sdzee.servlets.testutil.AvoidDuplication;
 
 public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 
@@ -23,12 +25,15 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 			""
 	};
 	
+	private Order coyoteOrderFromDb = null;
+	
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		
 		super.deleteAllElements();
 		
 		insertElement(coyoteOrder);
+		coyoteOrderFromDb = AvoidDuplication.getOrderFromDb(null);
 	}
 	
 	@Test
@@ -36,7 +41,7 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 		
 		driver.get(BASE_URL + "deleteOrder");
 		
-		checkElement(coyoteOrder[0], coyoteOrder);
+		checkElement(coyoteOrderFromDb, coyoteOrder);
 	}
 	
 	@Test
@@ -44,7 +49,7 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 		
 		driver.get(BASE_URL + "deleteOrder?orderKey");
 		
-		checkElement(coyoteOrder[0], coyoteOrder);
+		checkElement(coyoteOrderFromDb, coyoteOrder);
 	}
 	
 	@Test
@@ -52,19 +57,16 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 		
 		driver.get(BASE_URL + "deleteOrder?orderKey=NonExisting");
 		
-		checkElement(coyoteOrder[0], coyoteOrder);
+		checkElement(coyoteOrderFromDb, coyoteOrder);
 	}
 	
 	@Test
-	public void testDeleteOrderDateKey() {
+	public void testDeleteIdAsKey() throws Exception {
 		
-		driver.get(BASE_URL + "listOrders");
-		
-		String orderDate = driver.findElement(By.xpath("//td[contains(text(), '" + coyoteOrder[0] + "')]/../td[2]")).getText();
-		
-		driver.get(BASE_URL + "deleteOrder?orderKey=" + orderDate);
+		driver.get(BASE_URL + "deleteOrder?orderKey=" + coyoteOrderFromDb.getId());
 		
 		Assert.assertEquals("No orders created.", driver.findElement(By.xpath("//p[@class='error']")).getText());
+		Assert.assertNull(AvoidDuplication.getOrderFromDb(coyoteOrderFromDb.getId().toString()));
 	}
 
 }

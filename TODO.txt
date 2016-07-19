@@ -1,4 +1,7 @@
 Rename CustomerController to CustomerCreateController, OrderController to OrderCreateController, CustomerForm to CustomerCreateForm and OrderForm to OrderCreateForm
+Return a specific error when there is a DAOException while deleting customer/order
 When there is an error on amount field, display back the wrong content instead of 0.0
 Is it OK (disturbing message on page refresh) to display the same URL whether the form validation succeeds or not?
 Use assertThat() instead of assertTrue() when possible
+Use import static when possible
+Limit Selenium dependency to testing scope

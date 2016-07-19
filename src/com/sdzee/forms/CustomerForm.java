@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
 import com.sdzee.beans.Customer;
+import com.sdzee.dao.CustomerDao;
+import com.sdzee.dao.base.DAOException;
 import com.sdzee.forms.base.BaseForm;
 
 import eu.medsea.mimeutil.MimeUtil;
@@ -28,6 +30,13 @@ public final class CustomerForm extends BaseForm {
 	
 	private static final int BUFFER_SIZE = 10240;
 	
+	private CustomerDao customerDao;
+	
+	public CustomerForm(CustomerDao customerDao) {
+		
+		this.customerDao = customerDao;
+	}
+	
 	public Customer createCustomer(HttpServletRequest request, String path) {
 		
 		String lastName = getParamValue(request, PARAM_LAST_NAME);
@@ -41,53 +50,32 @@ public final class CustomerForm extends BaseForm {
 		
 		try
 		{
-			validateLastName(lastName);
+			processLastName(lastName, customer);
+			processFirstName(firstName, customer);
+			processAddress(address, customer);
+			processPhoneNumber(phoneNumber, customer);
+			processEmail(emailAddress, customer);
+			processPictureName(request, path, pictureName, customer);
+			
+			if (errors.isEmpty())
+			{
+				customerDao.create(customer);
+				result = "Customer created successfully!";
+			}
+			else
+			{
+				result = "Customer not created.";
+			}
 		}
-		catch (FormValidationException fve)
-		{
-			setError(PARAM_LAST_NAME, fve.getMessage());
+		catch (DAOException daoe) {
+			result = "Customer not created: something wrong happened while saving. Please try again later.";
+			daoe.printStackTrace();
 		}
-		customer.setLastName(lastName);
 		
-		try
-		{
-			validateFirstName(firstName);
-		}
-		catch (FormValidationException fve)
-		{
-			setError(PARAM_FIRST_NAME, fve.getMessage());
-		}
-		customer.setFirstName(firstName);
-		
-		try
-		{
-			validateAddress(address);
-		}
-		catch (FormValidationException fve)
-		{
-			setError(PARAM_ADDRESS, fve.getMessage());
-		}
-		customer.setAddress(address);
-		
-		try
-		{
-			validatePhoneNumber(phoneNumber);
-		}
-		catch (FormValidationException fve)
-		{
-			setError(PARAM_PHONE_NUMBER, fve.getMessage());
-		}
-		customer.setPhoneNumber(phoneNumber);
-		
-		try
-		{
-			validateEmail(emailAddress);
-		}
-		catch (FormValidationException fve)
-		{
-			setError(PARAM_EMAIL_ADDRESS, fve.getMessage());
-		}
-		customer.setEmail(emailAddress);
+		return customer;
+	}
+
+	private void processPictureName(HttpServletRequest request, String path, String pictureName, Customer customer) {
 		
 		try
 		{
@@ -97,18 +85,76 @@ public final class CustomerForm extends BaseForm {
 		{
 			setError(PARAM_PICTURE_FILE, fve.getMessage());
 		}
+		
 		customer.setPictureName(pictureName);
+	}
+
+	private void processEmail(String emailAddress, Customer customer) {
 		
-		if (errors.isEmpty())
+		try
 		{
-			result = "Customer created successfully!";
+			validateEmail(emailAddress);
 		}
-		else
+		catch (FormValidationException fve)
 		{
-			result = "Customer not created.";
+			setError(PARAM_EMAIL_ADDRESS, fve.getMessage());
 		}
 		
-		return customer;
+		customer.setEmail(emailAddress);
+	}
+
+	private void processPhoneNumber(String phoneNumber, Customer customer) {
+		
+		try
+		{
+			validatePhoneNumber(phoneNumber);
+		}
+		catch (FormValidationException fve)
+		{
+			setError(PARAM_PHONE_NUMBER, fve.getMessage());
+		}
+		
+		customer.setPhoneNumber(phoneNumber);
+	}
+
+	private void processAddress(String address, Customer customer) {
+		try
+		{
+			validateAddress(address);
+		}
+		catch (FormValidationException fve)
+		{
+			setError(PARAM_ADDRESS, fve.getMessage());
+		}
+		customer.setAddress(address);
+	}
+
+	private void processFirstName(String firstName, Customer customer) {
+		
+		try
+		{
+			validateFirstName(firstName);
+		}
+		catch (FormValidationException fve)
+		{
+			setError(PARAM_FIRST_NAME, fve.getMessage());
+		}
+		
+		customer.setFirstName(firstName);
+	}
+
+	private void processLastName(String lastName, Customer customer) {
+		
+		try
+		{
+			validateLastName(lastName);
+		}
+		catch (FormValidationException fve)
+		{
+			setError(PARAM_LAST_NAME, fve.getMessage());
+		}
+		
+		customer.setLastName(lastName);
 	}
 	
 	/**
@@ -146,9 +192,12 @@ public final class CustomerForm extends BaseForm {
 	
 	private void validateEmail(String email) throws FormValidationException {
 		
-		if (email != null && !email.matches("([^.@]+)(\\.[^.@]+)*@([^.@]+\\.)+([^.@]+)"))
+		if (email != null && !(
+				email.matches("([^.@]+)(\\.[^.@]+)*@([^.@]+\\.)+([^.@]+)") &&
+				customerDao.findByEmail(email) == null
+		))
 		{
-			throw new FormValidationException("The email address must be valid.");
+			throw new FormValidationException("The email address must be valid and not already in use.");
 		}
 	}
 	

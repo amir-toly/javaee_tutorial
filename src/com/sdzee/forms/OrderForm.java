@@ -4,10 +4,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.joda.time.DateTime;
-
 import com.sdzee.beans.Customer;
 import com.sdzee.beans.Order;
+import com.sdzee.dao.OrderDao;
+import com.sdzee.dao.base.DAOException;
+import com.sdzee.dao.impl.DAOFactory;
 import com.sdzee.forms.base.BaseForm;
 
 public final class OrderForm extends BaseForm {
@@ -22,13 +23,19 @@ public final class OrderForm extends BaseForm {
 	
 	private static final String SESS_ATT_CUSTOMERS = "customers";
 	
-	private static final String DATE_FORMAT = "dd/MM/yyyy HH:MM:ss";
 	private static final String NEW_CUSTOMER_VALUE_YES = "newCustomer";
 	private static final String NEW_CUSTOMER_VALUE_NO = "existingCustomer";
 	
 	private boolean yesChecked = false;
 	private boolean noChecked = false;
 	private String customerKey;
+	
+	private OrderDao orderDao;
+	
+	public OrderForm(OrderDao orderDao) {
+		
+		this.orderDao = orderDao;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public Order createOrder(HttpServletRequest request, String path) {
@@ -50,45 +57,110 @@ public final class OrderForm extends BaseForm {
 		Order order = new Order();
 		Customer customer = null;
 		
-		if (customersInSession)
+		try
 		{
-			String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
-			customerKey = getParamValue(request, PARAM_CUSTOMER_KEY);
-			
-			try
+			if (customersInSession)
 			{
-				validateNewCustomer(newCustomer);
-			}
-			catch (FormValidationException fve)
-			{
-				setError(PARAM_NEW_CUSTOMER, fve.getMessage());
-			}
-			
-			if (noChecked)
-			{
-				try
+				String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
+				customerKey = getParamValue(request, PARAM_CUSTOMER_KEY);
+				
+				processNewCustomer(newCustomer);
+				
+				if (noChecked)
 				{
-					validateCustomerKey(customerKey, customers);
-					
-					customer = customers.get(customerKey);
-				}
-				catch (FormValidationException fve)
-				{
-					setError(PARAM_CUSTOMER_KEY, fve.getMessage());
+					customer = processCustomerKey(customers, customer);
 				}
 			}
+			
+			if (!customersInSession || yesChecked)
+			{
+				/* Build OrderForm from CustomerForm */
+				CustomerForm customerForm = new CustomerForm(DAOFactory.getInstance().getCustomerDao());
+				customer = customerForm.createCustomer(request, path);
+				errors.putAll(customerForm.getErrors());
+			}
+			
+			order.setCustomer(customer);
+			
+			processAmount(amount, order);
+			processPaymentMethod(paymentMethod, order);
+			processPaymentStatus(paymentStatus, order);
+			processShippingMode(shippingMode, order);
+			processDeliveryStatus(deliveryStatus, order);
+			
+			
+			if (errors.isEmpty())
+			{
+				orderDao.create(order);
+				result = "Order created successfully!";
+			}
+			else
+			{
+				result = "Order not created.";
+			}
 		}
-		
-		if (!customersInSession || yesChecked)
+		catch (DAOException daoe)
 		{
-			/* Build OrderForm from CustomerForm */
-			CustomerForm customerForm = new CustomerForm();
-			customer = customerForm.createCustomer(request, path);
-			errors.putAll(customerForm.getErrors());
+			result = "Order not created: something wrong happened while saving. Please try again later.";
+			daoe.printStackTrace();
 		}
 		
-		order.setCustomer(customer);
-		order.setDate(DateTime.now().toString(DATE_FORMAT));
+		return order;
+	}
+
+	private void processDeliveryStatus(String deliveryStatus, Order order) {
+		
+		try
+		{
+			validateDeliveryStatus(deliveryStatus);
+		}
+		catch (FormValidationException fve)
+		{
+			setError(PARAM_DELIVERY_STATUS, fve.getMessage());
+		}
+		order.setDeliveryStatus(deliveryStatus);
+	}
+
+	private void processShippingMode(String shippingMode, Order order) {
+		
+		try
+		{
+			validateShippingMode(shippingMode);
+		}
+		catch (FormValidationException fve)
+		{
+			setError(PARAM_SHIPPING_MODE, fve.getMessage());
+		}
+		order.setShippingMode(shippingMode);
+	}
+
+	private void processPaymentStatus(String paymentStatus, Order order) {
+		
+		try
+		{
+			validatePaymentStatus(paymentStatus);
+		}
+		catch (FormValidationException fve)
+		{
+			setError(PARAM_PAYMENT_STATUS, fve.getMessage());
+		}
+		order.setPaymentStatus(paymentStatus);
+	}
+
+	private void processPaymentMethod(String paymentMethod, Order order) {
+		
+		try
+		{
+			validatePaymentMethod(paymentMethod);
+		}
+		catch (FormValidationException fve)
+		{
+			setError(PARAM_PAYMENT_METHOD, fve.getMessage());
+		}
+		order.setPaymentMethod(paymentMethod);
+	}
+
+	private void processAmount(String amount, Order order) {
 		
 		try
 		{
@@ -100,57 +172,33 @@ public final class OrderForm extends BaseForm {
 		{
 			setError(PARAM_AMOUNT, e.getMessage());
 		}
+	}
+
+	private Customer processCustomerKey(Map<String, Customer> customers, Customer customer) {
 		
 		try
 		{
-			validatePaymentMethod(paymentMethod);
+			validateCustomerKey(customerKey, customers);
+			
+			customer = customers.get(customerKey);
 		}
 		catch (FormValidationException fve)
 		{
-			setError(PARAM_PAYMENT_METHOD, fve.getMessage());
+			setError(PARAM_CUSTOMER_KEY, fve.getMessage());
 		}
-		order.setPaymentMethod(paymentMethod);
+		return customer;
+	}
+
+	private void processNewCustomer(String newCustomer) {
 		
 		try
 		{
-			validatePaymentStatus(paymentStatus);
+			validateNewCustomer(newCustomer);
 		}
 		catch (FormValidationException fve)
 		{
-			setError(PARAM_PAYMENT_STATUS, fve.getMessage());
+			setError(PARAM_NEW_CUSTOMER, fve.getMessage());
 		}
-		order.setPaymentStatus(paymentStatus);
-		
-		try
-		{
-			validateShippingMode(shippingMode);
-		}
-		catch (FormValidationException fve)
-		{
-			setError(PARAM_SHIPPING_MODE, fve.getMessage());
-		}
-		order.setShippingMode(shippingMode);
-		
-		try
-		{
-			validateDeliveryStatus(deliveryStatus);
-		}
-		catch (FormValidationException fve)
-		{
-			setError(PARAM_DELIVERY_STATUS, fve.getMessage());
-		}
-		order.setDeliveryStatus(deliveryStatus);
-		
-		if (errors.isEmpty())
-		{
-			result = "Order created successfully!";
-		}
-		else
-		{
-			result = "Order not created.";
-		}
-		
-		return order;
 	}
 	
 	/**
