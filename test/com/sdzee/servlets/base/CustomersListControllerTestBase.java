@@ -32,6 +32,7 @@ public abstract class CustomersListControllerTestBase extends ListControllerTest
 		{
 			String currentInput = customerInputs[i];
 			String fieldValueFromDb = null;
+			String xpathExpForCurrentTd = "//td[a[@href='/javaee_tutorial/deleteCustomer?customerKey=" + listKey + "']]/../td[" + (i + 1) + "]";
 			
 			switch (i) {
 			case 0:
@@ -61,15 +62,15 @@ public abstract class CustomersListControllerTestBase extends ListControllerTest
 			{
 				currentInput = currentInput.substring(currentInput.lastIndexOf('/') + 1);
 				
-				Assert.assertEquals("Here", driver.findElement(By.xpath("//td[a[@href='/javaee_tutorial/deleteCustomer?customerKey=" + listKey + "']]/../td[" + (i + 1) + "]/a")).getText());
+				Assert.assertEquals("Here", driver.findElement(By.xpath(xpathExpForCurrentTd + "/a")).getText());
 				Assert.assertThat(
-						driver.findElement(By.xpath("//td[a[@href='/javaee_tutorial/deleteCustomer?customerKey=" + listKey + "']]/../td[" + (i + 1) + "]/a")).getAttribute("href"),
+						driver.findElement(By.xpath(xpathExpForCurrentTd + "/a")).getAttribute("href"),
 						StringEndsWith.endsWith(currentInput)
 				);
 			}
 			else
 			{
-				Assert.assertEquals(currentInput, driver.findElement(By.xpath("//td[a[@href='/javaee_tutorial/deleteCustomer?customerKey=" + listKey + "']]/../td[" + (i + 1) + "]")).getText());
+				Assert.assertEquals(currentInput, driver.findElement(By.xpath(xpathExpForCurrentTd)).getText());
 			}
 			
 			// Check against DB
