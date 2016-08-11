@@ -4,12 +4,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.sdzee.beans.Customer;
 import com.sdzee.servlets.base.CustomersListControllerTestBase;
+import com.sdzee.servlets.testutil.AvoidDuplication;
 
 public class DownloadControllerTest extends CustomersListControllerTestBase {
 
 	@Test
-	public void testValidLink() {
+	public void testValidLink() throws Exception {
 		
 		String[] coyote = new String[] {
 				"Coyote",
@@ -21,12 +23,15 @@ public class DownloadControllerTest extends CustomersListControllerTestBase {
 		};
 		
 		insertElement(coyote);
+		Customer coyoteFromDb = AvoidDuplication.getCustomerFromDb(null);
 		
 		driver.get(BASE_URL + "listCustomers");
 		
 		driver.findElement(By.xpath("//tr[2]/td[6]/a")).click();
 		
 		Assert.assertEquals(BASE_URL + "files/delete.png", driver.getCurrentUrl());
+		
+		AvoidDuplication.deleteCustomer(coyoteFromDb.getId());
 	}
 	
 	@Test

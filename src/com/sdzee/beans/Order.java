@@ -1,11 +1,11 @@
 package com.sdzee.beans;
 
-import java.sql.Timestamp;
+import org.joda.time.DateTime;
 
 public class Order {
 
 	private Long id;
-	private Timestamp date;
+	private DateTime date;
 	private double amount;
 	private String paymentMethod;
 	private String paymentStatus;
@@ -22,11 +22,11 @@ public class Order {
 		this.id = id;
 	}
 
-	public Timestamp getDate() {
+	public DateTime getDate() {
 		return date;
 	}
 
-	public void setDate(Timestamp date) {
+	public void setDate(DateTime date) {
 		this.date = date;
 	}
 

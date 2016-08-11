@@ -1,12 +1,14 @@
 package com.sdzee.servlets;
 
 import org.hamcrest.core.StringEndsWith;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.sdzee.beans.Customer;
 import com.sdzee.beans.Order;
 import com.sdzee.servlets.base.FormControllerTestBase;
 import com.sdzee.servlets.testutil.AvoidDuplication;
@@ -21,14 +23,26 @@ public class OrderControllerTest extends FormControllerTestBase {
 	private static String ERROR_MSG_SHIPPING_MODE = "The shipping mode must contain at least 2 characters.";
 	private static String ERROR_MSG_DELIVERY_STATUS = "The delivery status must contain at least 2 characters.";
 	
+	private Customer oneFromDb = null;
+	
 	@Before
 	public void setUp() {
 		
 		driver.get(BASE_URL + "createOrder");
 	}
 	
+	@After
+	public void tearDown() {
+		
+		// Delete customer One if present
+		if (oneFromDb != null)
+		{
+			AvoidDuplication.deleteCustomer(oneFromDb.getId());
+		}
+	}
+	
 	@Test
-	public void testNewCustomerNull() {
+	public void testNewCustomerNull() throws Exception {
 		
 		testNewCustomerSetUp();
 		
@@ -39,7 +53,7 @@ public class OrderControllerTest extends FormControllerTestBase {
 	}
 
 	@Test
-	public void testNewCustomerEmpty() {
+	public void testNewCustomerEmpty() throws Exception {
 		
 		testNewCustomerSetUp();
 		
@@ -47,7 +61,7 @@ public class OrderControllerTest extends FormControllerTestBase {
 	}
 	
 	@Test
-	public void testNewCustomerYes() {
+	public void testNewCustomerYes() throws Exception {
 		
 		testNewCustomerSetUp();
 		
@@ -63,7 +77,7 @@ public class OrderControllerTest extends FormControllerTestBase {
 	}
 	
 	@Test
-	public void testNewCustomerNo() {
+	public void testNewCustomerNo() throws Exception {
 		
 		String optionDisplayedText = "First One";
 		testNewCustomerNoSetUp();
@@ -81,7 +95,7 @@ public class OrderControllerTest extends FormControllerTestBase {
 	}
 	
 	@Test
-	public void testNewCustomerNoCustomerKeyNull() {
+	public void testNewCustomerNoCustomerKeyNull() throws Exception {
 		
 		testNewCustomerNoSetUp();
 		
@@ -91,7 +105,7 @@ public class OrderControllerTest extends FormControllerTestBase {
 	}
 
 	@Test
-	public void testNewCustomerNoCustomerKeyEmpty() {
+	public void testNewCustomerNoCustomerKeyEmpty() throws Exception {
 		
 		testNewCustomerNoSetUp();
 		
@@ -99,7 +113,7 @@ public class OrderControllerTest extends FormControllerTestBase {
 	}
 	
 	@Test
-	public void testNewCustomerNoCustomerKeyNonExisting() {
+	public void testNewCustomerNoCustomerKeyNonExisting() throws Exception {
 		
 		testNewCustomerNoSetUp();
 		
@@ -237,17 +251,15 @@ public class OrderControllerTest extends FormControllerTestBase {
 			Assert.assertThat(driver.findElement(By.xpath("//div[@id='content']/p[" + htmlParagraphsIdx + "]")).getText(), StringEndsWith.endsWith(currentInput));
 		}
 		
-		// We no longer need Martin's order...
-		driver.get(BASE_URL + "deleteOrder?orderKey=" + orderFromMartinFromDb.getId());
-		
-		// ... Neither Martin himself
-		driver.get(BASE_URL + "deleteCustomer?customerKey=" + orderFromMartinFromDb.getCustomer().getId());
+		// We no longer need Martin's order, neither Martin himself
+		AvoidDuplication.deleteCustomerAndOrder(orderFromMartinFromDb);
 	}
 	
 	/**
 	 * Creates a customer in session
+	 * @throws Exception 
 	 */
-	private void testNewCustomerSetUp() {
+	private void testNewCustomerSetUp() throws Exception {
 		
 		String[] one = new String[] {
 				"One",
@@ -261,14 +273,16 @@ public class OrderControllerTest extends FormControllerTestBase {
 		driver.get(BASE_URL + "createCustomer");
 		
 		insertElement(AvoidDuplication.customerFields, one);
+		oneFromDb = AvoidDuplication.getCustomerFromDb(null);
 		
 		driver.get(BASE_URL + "createOrder");
 	}
 	
 	/**
 	 * Creates a customer in session and do something with it
+	 * @throws Exception 
 	 */
-	private void testNewCustomerNoSetUp() {
+	private void testNewCustomerNoSetUp() throws Exception {
 		
 		testNewCustomerSetUp();
 		

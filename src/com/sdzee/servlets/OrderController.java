@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.sdzee.beans.Order;
+import com.sdzee.dao.CustomerDao;
 import com.sdzee.dao.OrderDao;
 import com.sdzee.dao.impl.DAOFactory;
 import com.sdzee.forms.OrderForm;
@@ -28,13 +29,17 @@ public class OrderController extends HttpServlet {
 	public static final String VIEW_RESULT = "/WEB-INF/displayOrder.jsp";
 	
 	private OrderDao orderDao;
+	private CustomerDao customerDao;
 
 	private static final long serialVersionUID = 2592998444053332359L;
 	
 	@Override
 	public void init() throws ServletException {
 		
-		this.orderDao = ((DAOFactory) getServletContext().getAttribute(CONF_DAO_FACTORY)).getOrderDao();
+		DAOFactory daoFactory = ((DAOFactory) getServletContext().getAttribute(CONF_DAO_FACTORY));
+		
+		this.orderDao = daoFactory.getOrderDao();
+		this.customerDao = daoFactory.getCustomerDao();
 	}
 
 	@Override
@@ -49,7 +54,7 @@ public class OrderController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		/* Create form */
-		OrderForm form = new OrderForm(orderDao);
+		OrderForm form = new OrderForm(orderDao, customerDao);
 		
 		/* Retrieve bean from form processing */
 		Order order = form.createOrder(req, AvoidDuplication.getPath(this));
@@ -64,15 +69,15 @@ public class OrderController extends HttpServlet {
 			AvoidDuplication.saveCustomerInSession(order.getCustomer(), req);
 			
 			HttpSession session = req.getSession();
-			Map<String, Order> orders = (Map<String, Order>) session.getAttribute(SESS_ATT_ORDERS);
+			Map<Long, Order> orders = (Map<Long, Order>) session.getAttribute(SESS_ATT_ORDERS);
 			
 			if (orders == null)
 			{
-				orders = new HashMap<String, Order>();
+				orders = new HashMap<Long, Order>();
 				session.setAttribute(SESS_ATT_ORDERS, orders);
 			}
 			
-			orders.put(order.getId().toString(), order);
+			orders.put(order.getId(), order);
 			
 			this.getServletContext().getRequestDispatcher(VIEW_RESULT).forward(req, resp);
 		}

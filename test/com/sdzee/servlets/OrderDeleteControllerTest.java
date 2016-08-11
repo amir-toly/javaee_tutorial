@@ -1,5 +1,6 @@
 package com.sdzee.servlets;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,10 +31,14 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 	@Before
 	public void setUp() throws Exception {
 		
-		super.deleteAllElements();
-		
 		insertElement(coyoteOrder);
 		coyoteOrderFromDb = AvoidDuplication.getOrderFromDb(null);
+	}
+	
+	@After
+	public void tearDown() {
+		
+		super.deleteAllElements();
 	}
 	
 	@Test

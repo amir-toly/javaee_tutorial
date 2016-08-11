@@ -89,7 +89,7 @@ public abstract class OrdersListControllerTestBase extends ListControllerTestBas
 				}
 				
 				Assert.assertEquals(orderInputs[eltInputsIdx], driver.findElement(
-						By.xpath("//td[a[@href='/javaee_tutorial/deleteOrder?orderKey=" + listKey + "']]/../td[" + tableColumnsIdx + "]")
+						By.xpath("//td[a[" + AvoidDuplication.xpathEndsWithAlternative("@href", "?orderKey=", listKey) + "]]/../td[" + tableColumnsIdx + "]")
 				).getText());
 			}
 			

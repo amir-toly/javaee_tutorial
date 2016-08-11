@@ -5,3 +5,9 @@ Is it OK (disturbing message on page refresh) to display the same URL whether th
 Use assertThat() instead of assertTrue() when possible
 Use import static when possible
 Limit Selenium dependency to testing scope
+Remove all unnecessary public-declared constants
+Rename order_date column to creation_date
+Remove "ON DELETE SET NULL" option on fk_customer_id and handle MySQLIntegrityConstraintViolationException
+Customer+Order insertion should be done in the same transaction
+Session operations should be done only after database operations performed correctly
+Use generics to factorize some code (i.e. in DatabaseToSessionFilter)

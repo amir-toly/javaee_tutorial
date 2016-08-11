@@ -19,15 +19,15 @@ public class AvoidDuplication {
 	public static void saveCustomerInSession(Customer customer, HttpServletRequest req) {
 		
 		HttpSession session = req.getSession();
-		Map<String,Customer> customers = (Map<String,Customer>) session.getAttribute(SESS_ATT_CUSTOMERS);
+		Map<Long,Customer> customers = (Map<Long,Customer>) session.getAttribute(SESS_ATT_CUSTOMERS);
 		
 		if (customers == null)
 		{
-			customers = new HashMap<String, Customer>();
+			customers = new HashMap<Long, Customer>();
 			session.setAttribute(SESS_ATT_CUSTOMERS, customers);
 		}
 		
-		customers.put(customer.getId().toString(), customer);
+		customers.put(customer.getId(), customer);
 	}
 	
 	public static String getPath(HttpServlet httpServlet) {

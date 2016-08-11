@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.sdzee.beans.Customer;
 import com.sdzee.dao.CustomerDao;
@@ -13,8 +15,9 @@ import com.sdzee.dao.base.DAOException;
 public class CustomerDaoImpl extends BaseDaoImpl implements CustomerDao {
 
 	private static final String SQL_INSERT = "INSERT INTO t_customer(last_name, first_name, address, phone_number, email, picture_name) VALUES (?, ?, ?, ?, ?, ?)";
-	private static final String SQL_DELETE = "DELETE FROM t_customer WHERE id = ?";
+	private static final String SQL_DELETE_BY_ID = "DELETE FROM t_customer WHERE id = ?";
 	private static final String SQL_SELECT_BY_EMAIL = "SELECT * FROM t_customer WHERE email = ?";
+	private static final String SQL_SELECT = "SELECT * FROM t_customer";
 	
 	private DAOFactory daoFactory;
 	
@@ -77,7 +80,7 @@ public class CustomerDaoImpl extends BaseDaoImpl implements CustomerDao {
 		try
 		{
 			connection = daoFactory.getConnection();
-			preparedStatement = initializePreparedStatement(connection, SQL_DELETE, false, id);
+			preparedStatement = initializePreparedStatement(connection, SQL_DELETE_BY_ID, false, id);
 			int status = preparedStatement.executeUpdate();
 			
 			if (status != 1)
@@ -124,6 +127,37 @@ public class CustomerDaoImpl extends BaseDaoImpl implements CustomerDao {
 		}
 		
 		return customer;
+	}
+
+	@Override
+	public List<Customer> findAll() throws DAOException {
+		
+		List<Customer> customers = new ArrayList<Customer>();
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		try
+		{
+			connection = daoFactory.getConnection();
+			preparedStatement = initializePreparedStatement(connection, SQL_SELECT, false);
+			resultSet = preparedStatement.executeQuery();
+			
+			while (resultSet.next())
+			{
+				customers.add(map(resultSet));
+			}
+		}
+		catch (SQLException sqle)
+		{
+			throw new DAOException(sqle);
+		}
+		finally
+		{
+			closeSilently(resultSet, preparedStatement, connection);
+		}
+		
+		return customers;
 	}
 	
 	private Customer map(ResultSet resultSet) throws SQLException {

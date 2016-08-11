@@ -22,10 +22,19 @@ public class CustomerControllerTest extends FormControllerTestBase {
 	private static String ERROR_MSG_PICTURE_FILE_REQ_NOT_SUPPORTED = "Request not supported. Expected: multipart/form-data.";
 	private static String ERROR_MSG_PICTURE_FILE = "The picture file must match an image type.";
 	
+	private static String[] martin = new String[] {
+			"Martin",
+			"Pierre",
+			"6 avenue du Parc, Lyon",
+			"0488776655",
+			"pmartin@mail.com",
+			"/Users/domanduck/Downloads/delete.png"
+	};
+	
 	@Before
 	public void setUp() {
-	
-		driver.get(BASE_URL + "createCustomer");
+		
+		goToCreateCustomerPage();
 	}
 	
 	@Test
@@ -119,10 +128,14 @@ public class CustomerControllerTest extends FormControllerTestBase {
 	}
 	
 	@Test
-	public void testEmailAlreadyInUse() {
+	public void testEmailAlreadyInUse() throws Exception {
 		
-		// The email "two.second@mail.com" is part of the app's bootstrapping dataset
-		checkErrorMsgForInput("customerEmailAddress", "two.second@mail.com", ERROR_MSG_EMAIL);
+		Customer martinFromDb = addMartin();
+		
+		goToCreateCustomerPage();
+		checkErrorMsgForInput("customerEmailAddress", "pmartin@mail.com", ERROR_MSG_EMAIL);
+		
+		removeMartin(martinFromDb);
 	}
 	
 	@Ignore//TODO(fix comparison)
@@ -160,21 +173,11 @@ public class CustomerControllerTest extends FormControllerTestBase {
 	@Test
 	public void testDisplayPage() throws Exception {
 		
-		String[] elementInputs = new String[] {
-				"Martin",
-				"Pierre",
-				"6 avenue du Parc, Lyon",
-				"0488776655",
-				"pmartin@mail.com",
-				"/Users/domanduck/Downloads/delete.png"
-		};
+		Customer martinFromDb = addMartin();
 		
-		insertElement(AvoidDuplication.customerFields, elementInputs);
-		Customer martinFromDb = AvoidDuplication.getCustomerFromDb(null);
-		
-		for (int i = 0; i < elementInputs.length; i++)
+		for (int i = 0; i < martin.length; i++)
 		{
-			String currentInput = elementInputs[i];
+			String currentInput = martin[i];
 			
 			if (i == 5) // Picture name => get only the filename
 			{
@@ -184,7 +187,28 @@ public class CustomerControllerTest extends FormControllerTestBase {
 			Assert.assertThat(driver.findElement(By.xpath("//div[@id='content']/p[" + (i + 2) + "]")).getText(), StringEndsWith.endsWith(currentInput));
 		}
 		
-		// We no longer need Martin
-		driver.get(BASE_URL + "deleteCustomer?customerKey=" + martinFromDb.getId());
+		removeMartin(martinFromDb);
+	}
+	
+	private Customer addMartin() throws Exception {
+		
+		insertElement(AvoidDuplication.customerFields, martin);
+		Customer martinFromDb = AvoidDuplication.getCustomerFromDb(null);
+		
+		return martinFromDb;
+	}
+	
+	/**
+	 * We no longer need Martin
+	 * @param martinFromDb
+	 */
+	private void removeMartin(Customer martinFromDb) {
+		
+		AvoidDuplication.deleteCustomer(martinFromDb.getId());
+	}
+	
+	private void goToCreateCustomerPage() {
+	
+		driver.get(BASE_URL + "createCustomer");
 	}
 }

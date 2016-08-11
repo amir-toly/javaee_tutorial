@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.joda.time.DateTime;
+
 import com.sdzee.beans.Customer;
 import com.sdzee.beans.Order;
+import com.sdzee.servlets.base.ControllerTestBase;
 
 public class AvoidDuplication {
 	
@@ -180,7 +183,7 @@ public class AvoidDuplication {
 				
 				lastInsertedOrder.setCustomer(customer);
 				lastInsertedOrder.setId(resultSet.getLong("ord.id"));
-				lastInsertedOrder.setDate(resultSet.getTimestamp("ord.order_date"));
+				lastInsertedOrder.setDate(new DateTime(resultSet.getDate("ord.order_date").getTime()));
 				lastInsertedOrder.setAmount(resultSet.getDouble("ord.amount"));
 				lastInsertedOrder.setPaymentMethod(resultSet.getString("ord.payment_method"));
 				lastInsertedOrder.setPaymentStatus(resultSet.getString("ord.payment_status"));
@@ -224,6 +227,24 @@ public class AvoidDuplication {
 		}
 		
 		return lastInsertedOrder;
+	}
+	
+	public static String xpathEndsWithAlternative(String xpathElement, String expressionToMatch, Long identifier) {
+		
+		return xpathElement +
+				"[substring(., string-length() - (" + expressionToMatch.length() + " + " + identifier.toString().length() + " - 1)) = "
+				+ "'" + expressionToMatch + identifier + "']";
+	}
+	
+	public static void deleteCustomer(Long customerId) {
+		
+		ControllerTestBase.driver.get(ControllerTestBase.BASE_URL + "deleteCustomer?customerKey=" + customerId);
+	}
+	
+	public static void deleteCustomerAndOrder(Order orderFromDb) {
+		
+		ControllerTestBase.driver.get(ControllerTestBase.BASE_URL + "deleteOrder?orderKey=" + orderFromDb.getId());
+		deleteCustomer(orderFromDb.getCustomer().getId());
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.sdzee.servlets;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,10 +26,14 @@ public class CustomerDeleteControllerTest extends CustomersListControllerTestBas
 	@Before
 	public void setUp() throws Exception {
 		
-		super.deleteAllElements();
-		
 		insertElement(coyote);
 		coyoteFromDb = AvoidDuplication.getCustomerFromDb(null);
+	}
+	
+	@After
+	public void tearDown() {
+		
+		super.deleteAllElements();
 	}
 	
 	@Test

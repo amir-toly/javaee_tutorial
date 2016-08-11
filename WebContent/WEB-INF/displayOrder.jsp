@@ -1,5 +1,6 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.joda.org/joda/time/tags" prefix="joda" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -48,7 +49,7 @@
 			</p>
 			<p>
 				Date:
-				<c:out value="${ requestScope.order.date }" />
+				<joda:format value="${ requestScope.order.date }" pattern="dd/MM/yyyy HH:mm:ss" />
 			</p>
 			<p>
 				Amount:

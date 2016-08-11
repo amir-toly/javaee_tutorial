@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.sdzee.beans.Customer;
 import com.sdzee.beans.Order;
+import com.sdzee.dao.CustomerDao;
 import com.sdzee.dao.OrderDao;
 import com.sdzee.dao.base.DAOException;
-import com.sdzee.dao.impl.DAOFactory;
 import com.sdzee.forms.base.BaseForm;
 
 public final class OrderForm extends BaseForm {
@@ -28,19 +28,21 @@ public final class OrderForm extends BaseForm {
 	
 	private boolean yesChecked = false;
 	private boolean noChecked = false;
-	private String customerKey;
+	private Long customerKey;
 	
 	private OrderDao orderDao;
+	private CustomerDao customerDao;
 	
-	public OrderForm(OrderDao orderDao) {
+	public OrderForm(OrderDao orderDao, CustomerDao customerDao) {
 		
 		this.orderDao = orderDao;
+		this.customerDao = customerDao;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public Order createOrder(HttpServletRequest request, String path) {
 		
-		Map<String, Customer> customers = (Map<String, Customer>) request.getSession().getAttribute(SESS_ATT_CUSTOMERS);
+		Map<Long, Customer> customers = (Map<Long, Customer>) request.getSession().getAttribute(SESS_ATT_CUSTOMERS);
 		boolean customersInSession = false;
 		
 		if (customers != null && !customers.isEmpty())
@@ -62,7 +64,13 @@ public final class OrderForm extends BaseForm {
 			if (customersInSession)
 			{
 				String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
-				customerKey = getParamValue(request, PARAM_CUSTOMER_KEY);
+				
+				try
+				{
+					customerKey = Long.valueOf(getParamValue(request, PARAM_CUSTOMER_KEY));
+				}
+				catch (NumberFormatException ignore)
+				{}
 				
 				processNewCustomer(newCustomer);
 				
@@ -75,7 +83,7 @@ public final class OrderForm extends BaseForm {
 			if (!customersInSession || yesChecked)
 			{
 				/* Build OrderForm from CustomerForm */
-				CustomerForm customerForm = new CustomerForm(DAOFactory.getInstance().getCustomerDao());
+				CustomerForm customerForm = new CustomerForm(customerDao);
 				customer = customerForm.createCustomer(request, path);
 				errors.putAll(customerForm.getErrors());
 			}
@@ -174,7 +182,7 @@ public final class OrderForm extends BaseForm {
 		}
 	}
 
-	private Customer processCustomerKey(Map<String, Customer> customers, Customer customer) {
+	private Customer processCustomerKey(Map<Long, Customer> customers, Customer customer) {
 		
 		try
 		{
@@ -221,7 +229,7 @@ public final class OrderForm extends BaseForm {
 		}
 	}
 	
-	private void validateCustomerKey(String customerKey, Map<String, Customer> customers) throws FormValidationException {
+	private void validateCustomerKey(Long customerKey, Map<Long, Customer> customers) throws FormValidationException {
 		
 		if (!customers.containsKey(customerKey))
 		{
@@ -275,7 +283,7 @@ public final class OrderForm extends BaseForm {
 		return noChecked;
 	}
 
-	public String getCustomerKey() {
+	public Long getCustomerKey() {
 		return customerKey;
 	}
 }

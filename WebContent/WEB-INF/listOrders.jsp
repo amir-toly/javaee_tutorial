@@ -1,5 +1,6 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.joda.org/joda/time/tags" prefix="joda" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -29,7 +30,7 @@
 						<c:forEach items="${ sessionScope.orders }" var="order" varStatus="status">
 							<tr class="${ status.count % 2 != 0 ? 'odd' : '' }">
 								<td><c:out value="${ order.value.customer.firstName } ${ order.value.customer.lastName }"></c:out></td>
-								<td><c:out value="${ order.value.date }"></c:out></td>
+								<td><joda:format value="${ order.value.date }" pattern="dd/MM/yyyy HH:mm:ss" /></td>
 								<td><c:out value="${ order.value.amount }"></c:out></td>
 								<td><c:out value="${ order.value.paymentMethod }"></c:out></td>
 								<td><c:out value="${ order.value.paymentStatus }"></c:out></td>

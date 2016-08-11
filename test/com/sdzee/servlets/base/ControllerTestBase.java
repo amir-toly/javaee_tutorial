@@ -11,8 +11,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public abstract class ControllerTestBase {
 	
-	protected static WebDriver driver;
-	protected static final String BASE_URL = "http://localhost:8080/javaee_tutorial/";
+	public static WebDriver driver;
+	public static final String BASE_URL = "http://localhost:8080/javaee_tutorial/";
 	
 	@BeforeClass
 	public static void setUpClass() {

@@ -17,7 +17,7 @@ CREATE TABLE sdzee.t_customer (
 
 CREATE TABLE sdzee.t_order (
 	id INT(11) NOT NULL AUTO_INCREMENT,
-	customer_id INT(11) NOT NULL,
+	customer_id INT(11),
 	order_date DATETIME NOT NULL,
 	amount DOUBLE NOT NULL,
 	payment_method VARCHAR(20) NOT NULL,
@@ -25,5 +25,5 @@ CREATE TABLE sdzee.t_order (
 	shipping_mode VARCHAR(20) NOT NULL,
 	delivery_status VARCHAR(20),
 	PRIMARY KEY (id),
-	CONSTRAINT fk_customer_id FOREIGN KEY (customer_id) REFERENCES sdzee.t_customer(id)
+	CONSTRAINT fk_customer_id FOREIGN KEY (customer_id) REFERENCES sdzee.t_customer(id) ON DELETE SET NULL
 ) ENGINE = INNODB;

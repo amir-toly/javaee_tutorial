@@ -32,7 +32,7 @@ public abstract class CustomersListControllerTestBase extends ListControllerTest
 		{
 			String currentInput = customerInputs[i];
 			String fieldValueFromDb = null;
-			String xpathExpForCurrentTd = "//td[a[@href='/javaee_tutorial/deleteCustomer?customerKey=" + listKey + "']]/../td[" + (i + 1) + "]";
+			String xpathExpForCurrentTd = "//td[a[" + AvoidDuplication.xpathEndsWithAlternative("@href", "?customerKey=", listKey) + "]]/../td[" + (i + 1) + "]";
 			
 			switch (i) {
 			case 0:
