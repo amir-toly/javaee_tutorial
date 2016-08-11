@@ -76,7 +76,7 @@ public final class OrderForm extends BaseForm {
 				
 				if (noChecked)
 				{
-					customer = processCustomerKey(customers, customer);
+					customer = processCustomerKey(customers);
 				}
 			}
 			
@@ -182,11 +182,13 @@ public final class OrderForm extends BaseForm {
 		}
 	}
 
-	private Customer processCustomerKey(Map<Long, Customer> customers, Customer customer) {
+	private Customer processCustomerKey(Map<Long, Customer> customers) {
+		
+		Customer customer = null;
 		
 		try
 		{
-			validateCustomerKey(customerKey, customers);
+			validateCustomerKey(customers);
 			
 			customer = customers.get(customerKey);
 		}
@@ -194,6 +196,7 @@ public final class OrderForm extends BaseForm {
 		{
 			setError(PARAM_CUSTOMER_KEY, fve.getMessage());
 		}
+		
 		return customer;
 	}
 
@@ -229,7 +232,7 @@ public final class OrderForm extends BaseForm {
 		}
 	}
 	
-	private void validateCustomerKey(Long customerKey, Map<Long, Customer> customers) throws FormValidationException {
+	private void validateCustomerKey(Map<Long, Customer> customers) throws FormValidationException {
 		
 		if (!customers.containsKey(customerKey))
 		{
