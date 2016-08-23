@@ -1,5 +1,6 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.joda.org/joda/time/tags" prefix="joda" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -58,7 +59,7 @@
 					<legend>Order details</legend>
 					
 					<label for="orderDate">Date <span class="required">*</span></label>
-					<input type="text" id="orderDate" name="orderDate" value='<c:out value="${ requestScope.order.date }" />' size="20" maxlength="20" disabled />
+					<input type="text" id="orderDate" name="orderDate" value='<joda:format value="${ requestScope.order.date }" pattern="dd/MM/yyyy HH:mm:ss" />' size="20" maxlength="20" disabled />
 					<span class="error">${ requestScope.form.errors['orderDate'] }</span>
 					<br />
 					

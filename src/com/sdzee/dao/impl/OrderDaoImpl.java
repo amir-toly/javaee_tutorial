@@ -4,13 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
 
-import com.sdzee.beans.Customer;
 import com.sdzee.beans.Order;
+import com.sdzee.dao.CustomerDao;
 import com.sdzee.dao.OrderDao;
 import com.sdzee.dao.base.BaseDaoImpl;
 import com.sdzee.dao.base.DAOException;
@@ -18,11 +19,9 @@ import com.sdzee.dao.base.DAOException;
 public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
 
 	private static final String SQL_INSERT = "INSERT INTO t_order(customer_id, order_date, amount, payment_method, payment_status, shipping_mode, delivery_status) " +
-			"VALUES (?, NOW(), ?, ?, ?, ?, ?)";
+			"VALUES (?, ?, ?, ?, ?, ?, ?)";
 	private static final String SQL_DELETE_BY_ID = "DELETE FROM t_order WHERE id = ?";
-	private static final String SQL_SELECT = "SELECT cust.id, cust.last_name, cust.first_name, cust.address, cust.phone_number, cust.email, cust.picture_name, "
-			+ "ord.id, ord.order_date, ord.amount, ord.payment_method, ord.payment_status, ord.shipping_mode, ord.delivery_status "
-			+ "FROM t_order ord JOIN t_customer cust ON cust.id = ord.customer_id";
+	private static final String SQL_SELECT = "SELECT * FROM t_order";
 	
 	private DAOFactory daoFactory;
 	
@@ -43,6 +42,7 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
 			connection = daoFactory.getConnection();
 			preparedStatement = initializePreparedStatement(connection, SQL_INSERT, true,
 					order.getCustomer().getId(),
+					new Timestamp(order.getDate().getMillis()),
 					order.getAmount(),
 					order.getPaymentMethod(),
 					order.getPaymentStatus(),
@@ -114,7 +114,7 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
 		try
 		{
 			connection = daoFactory.getConnection();
-			preparedStatement = initializePreparedStatement(connection, SQL_SELECT, false);
+			preparedStatement = connection.prepareStatement(SQL_SELECT);
 			resultSet = preparedStatement.executeQuery();
 			
 			while (resultSet.next())
@@ -137,24 +137,16 @@ public class OrderDaoImpl extends BaseDaoImpl implements OrderDao {
 	private Order map(ResultSet resultSet) throws SQLException {
 		
 		Order order = new Order();
-		Customer customer = new Customer();
+		CustomerDao customerDao = daoFactory.getCustomerDao();
 		
-		customer.setId(resultSet.getLong("cust.id"));
-		customer.setLastName(resultSet.getString("cust.last_name"));
-		customer.setFirstName(resultSet.getString("cust.first_name"));
-		customer.setAddress(resultSet.getString("cust.address"));
-		customer.setPhoneNumber(resultSet.getString("cust.phone_number"));
-		customer.setEmail(resultSet.getString("cust.email"));
-		customer.setPictureName(resultSet.getString("cust.picture_name"));
-		
-		order.setCustomer(customer);
-		order.setId(resultSet.getLong("ord.id"));
-		order.setDate(new DateTime(resultSet.getDate("ord.order_date").getTime()));
-		order.setAmount(resultSet.getDouble("ord.amount"));
-		order.setPaymentMethod(resultSet.getString("ord.payment_method"));
-		order.setPaymentStatus(resultSet.getString("ord.payment_status"));
-		order.setShippingMode(resultSet.getString("ord.shipping_mode"));
-		order.setDeliveryStatus(resultSet.getString("ord.delivery_status"));
+		order.setCustomer(customerDao.findById(resultSet.getLong("customer_id")));
+		order.setId(resultSet.getLong("id"));
+		order.setDate(new DateTime(resultSet.getTimestamp("order_date")));
+		order.setAmount(resultSet.getDouble("amount"));
+		order.setPaymentMethod(resultSet.getString("payment_method"));
+		order.setPaymentStatus(resultSet.getString("payment_status"));
+		order.setShippingMode(resultSet.getString("shipping_mode"));
+		order.setDeliveryStatus(resultSet.getString("delivery_status"));
 		
 		return order;
 	}

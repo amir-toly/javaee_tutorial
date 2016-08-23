@@ -1,5 +1,6 @@
 package com.sdzee.dao.impl;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -54,6 +55,10 @@ public class DAOFactory {
 			username = properties.getProperty(PROP_USERNAME);
 			password = properties.getProperty(PROP_PASSWORD);
 		}
+		catch (FileNotFoundException fnfe)
+		{
+			throw new DAOConfigurationException("The properties file " + PROPERTIES_FILE + " can not be found", fnfe);
+		}
 		catch (IOException ioe)
 		{
 			throw new DAOConfigurationException("Can not load the properties file " + PROPERTIES_FILE, ioe);
@@ -65,7 +70,7 @@ public class DAOFactory {
 		}
 		catch (ClassNotFoundException cnfe)
 		{
-			throw new DAOConfigurationException("Database driver can not be found in classpath.", cnfe);
+			throw new DAOConfigurationException("Database driver can not be found in the classpath.", cnfe);
 		}
 		
 		DAOFactory instance = new DAOFactory(url, username, password);

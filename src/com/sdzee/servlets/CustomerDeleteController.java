@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.sdzee.beans.Customer;
 import com.sdzee.dao.CustomerDao;
+import com.sdzee.dao.base.DAOException;
 import com.sdzee.dao.impl.DAOFactory;
 
 public class CustomerDeleteController extends HttpServlet {
@@ -45,7 +46,15 @@ public class CustomerDeleteController extends HttpServlet {
 				Long customerKeyAsLong = Long.valueOf(customerKey);
 				
 				customers.remove(customerKeyAsLong);
-				customerDao.delete(customerKeyAsLong);
+				
+				try
+				{
+					customerDao.delete(customerKeyAsLong);
+				}
+				catch (DAOException daoe)
+				{
+					daoe.printStackTrace();
+				}
 			}
 			catch (NumberFormatException ignore)
 			{}

@@ -16,6 +16,7 @@ public class CustomerDaoImpl extends BaseDaoImpl implements CustomerDao {
 
 	private static final String SQL_INSERT = "INSERT INTO t_customer(last_name, first_name, address, phone_number, email, picture_name) VALUES (?, ?, ?, ?, ?, ?)";
 	private static final String SQL_DELETE_BY_ID = "DELETE FROM t_customer WHERE id = ?";
+	private static final String SQL_SELECT_BY_ID = "SELECT * FROM t_customer WHERE id = ?";
 	private static final String SQL_SELECT_BY_EMAIL = "SELECT * FROM t_customer WHERE email = ?";
 	private static final String SQL_SELECT = "SELECT * FROM t_customer";
 	
@@ -99,34 +100,15 @@ public class CustomerDaoImpl extends BaseDaoImpl implements CustomerDao {
 	}
 
 	@Override
+	public Customer findById(Long id) throws DAOException {
+		
+		return find(SQL_SELECT_BY_ID, id);
+	}
+
+	@Override
 	public Customer findByEmail(String email) throws DAOException {
 		
-		Customer customer = null;
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-		
-		try
-		{
-			connection = daoFactory.getConnection();
-			preparedStatement = initializePreparedStatement(connection, SQL_SELECT_BY_EMAIL, false, email);
-			resultSet = preparedStatement.executeQuery();
-			
-			if (resultSet.next())
-			{
-				customer = map(resultSet);
-			}
-		}
-		catch (SQLException sqle)
-		{
-			throw new DAOException(sqle);
-		}
-		finally
-		{
-			closeSilently(resultSet, preparedStatement, connection);
-		}
-		
-		return customer;
+		return find(SQL_SELECT_BY_EMAIL, email);
 	}
 
 	@Override
@@ -140,7 +122,7 @@ public class CustomerDaoImpl extends BaseDaoImpl implements CustomerDao {
 		try
 		{
 			connection = daoFactory.getConnection();
-			preparedStatement = initializePreparedStatement(connection, SQL_SELECT, false);
+			preparedStatement = connection.prepareStatement(SQL_SELECT);
 			resultSet = preparedStatement.executeQuery();
 			
 			while (resultSet.next())
@@ -158,6 +140,36 @@ public class CustomerDaoImpl extends BaseDaoImpl implements CustomerDao {
 		}
 		
 		return customers;
+	}
+
+	private Customer find(String sql, Object... objects) throws DAOException {
+		
+		Customer customer = null;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		try
+		{
+			connection = daoFactory.getConnection();
+			preparedStatement = initializePreparedStatement(connection, sql, false, objects);
+			resultSet = preparedStatement.executeQuery();
+			
+			if (resultSet.next())
+			{
+				customer = map(resultSet);
+			}
+		}
+		catch (SQLException sqle)
+		{
+			throw new DAOException(sqle);
+		}
+		finally
+		{
+			closeSilently(resultSet, preparedStatement, connection);
+		}
+		
+		return customer;
 	}
 	
 	private Customer map(ResultSet resultSet) throws SQLException {

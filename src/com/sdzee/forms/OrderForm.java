@@ -4,6 +4,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.DateTime;
+
 import com.sdzee.beans.Customer;
 import com.sdzee.beans.Order;
 import com.sdzee.dao.CustomerDao;
@@ -89,6 +91,7 @@ public final class OrderForm extends BaseForm {
 			}
 			
 			order.setCustomer(customer);
+			order.setDate(new DateTime());
 			
 			processAmount(amount, order);
 			processPaymentMethod(paymentMethod, order);

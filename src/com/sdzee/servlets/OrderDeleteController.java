@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.sdzee.beans.Order;
 import com.sdzee.dao.OrderDao;
+import com.sdzee.dao.base.DAOException;
 import com.sdzee.dao.impl.DAOFactory;
 
 public class OrderDeleteController extends HttpServlet {
@@ -45,7 +46,15 @@ public class OrderDeleteController extends HttpServlet {
 				Long orderKeyAsLong = Long.valueOf(orderKey);
 				
 				orders.remove(orderKeyAsLong);
-				orderDao.delete(orderKeyAsLong);
+				
+				try
+				{
+					orderDao.delete(orderKeyAsLong);
+				}
+				catch (DAOException daoe)
+				{
+					daoe.printStackTrace();
+				}
 			}
 			catch (NumberFormatException ignore)
 			{}
