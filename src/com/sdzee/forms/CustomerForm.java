@@ -44,7 +44,6 @@ public final class CustomerForm extends BaseForm {
 		String address = getParamValue(request, PARAM_ADDRESS);
 		String phoneNumber = getParamValue(request, PARAM_PHONE_NUMBER);
 		String emailAddress = getParamValue(request, PARAM_EMAIL_ADDRESS);
-		String pictureName = null;
 		
 		Customer customer = new Customer();
 		
@@ -55,7 +54,7 @@ public final class CustomerForm extends BaseForm {
 			processAddress(address, customer);
 			processPhoneNumber(phoneNumber, customer);
 			processEmail(emailAddress, customer);
-			processPictureName(request, path, pictureName, customer);
+			processPictureName(request, path, customer);
 			
 			if (errors.isEmpty())
 			{
@@ -75,7 +74,9 @@ public final class CustomerForm extends BaseForm {
 		return customer;
 	}
 
-	private void processPictureName(HttpServletRequest request, String path, String pictureName, Customer customer) {
+	private void processPictureName(HttpServletRequest request, String path, Customer customer) {
+		
+		String pictureName = null;
 		
 		try
 		{
