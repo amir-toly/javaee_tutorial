@@ -47,28 +47,29 @@ public final class CustomerForm extends BaseForm {
 		
 		Customer customer = new Customer();
 		
-		try
+		processLastName(lastName, customer);
+		processFirstName(firstName, customer);
+		processAddress(address, customer);
+		processPhoneNumber(phoneNumber, customer);
+		processEmail(emailAddress, customer);
+		processPictureName(request, path, customer);
+		
+		if (errors.isEmpty())
 		{
-			processLastName(lastName, customer);
-			processFirstName(firstName, customer);
-			processAddress(address, customer);
-			processPhoneNumber(phoneNumber, customer);
-			processEmail(emailAddress, customer);
-			processPictureName(request, path, customer);
-			
-			if (errors.isEmpty())
+			try
 			{
 				customerDao.create(customer);
 				result = "Customer created successfully!";
 			}
-			else
+			catch (DAOException daoe)
 			{
-				result = "Customer not created.";
+				result = "Customer not created: something wrong happened while saving. Please try again later.";
+				daoe.printStackTrace();
 			}
 		}
-		catch (DAOException daoe) {
-			result = "Customer not created: something wrong happened while saving. Please try again later.";
-			daoe.printStackTrace();
+		else
+		{
+			result = "Customer not created.";
 		}
 		
 		return customer;

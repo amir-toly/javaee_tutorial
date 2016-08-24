@@ -61,59 +61,58 @@ public final class OrderForm extends BaseForm {
 		Order order = new Order();
 		Customer customer = null;
 		
-		try
+		if (customersInSession)
 		{
-			if (customersInSession)
+			String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
+			
+			try
 			{
-				String newCustomer = getParamValue(request, PARAM_NEW_CUSTOMER);
-				
-				try
-				{
-					customerKey = Long.valueOf(getParamValue(request, PARAM_CUSTOMER_KEY));
-				}
-				catch (NumberFormatException ignore)
-				{}
-				
-				processNewCustomer(newCustomer);
-				
-				if (noChecked)
-				{
-					customer = processCustomerKey(customers);
-				}
+				customerKey = Long.valueOf(getParamValue(request, PARAM_CUSTOMER_KEY));
 			}
+			catch (NumberFormatException ignore)
+			{}
 			
-			if (!customersInSession || yesChecked)
+			processNewCustomer(newCustomer);
+			
+			if (noChecked)
 			{
-				/* Build OrderForm from CustomerForm */
-				CustomerForm customerForm = new CustomerForm(customerDao);
-				customer = customerForm.createCustomer(request, path);
-				errors.putAll(customerForm.getErrors());
+				customer = processCustomerKey(customers);
 			}
-			
-			order.setCustomer(customer);
-			order.setDate(new DateTime());
-			
-			processAmount(amount, order);
-			processPaymentMethod(paymentMethod, order);
-			processPaymentStatus(paymentStatus, order);
-			processShippingMode(shippingMode, order);
-			processDeliveryStatus(deliveryStatus, order);
-			
-			
-			if (errors.isEmpty())
+		}
+		
+		if (!customersInSession || yesChecked)
+		{
+			/* Build OrderForm from CustomerForm */
+			CustomerForm customerForm = new CustomerForm(customerDao);
+			customer = customerForm.createCustomer(request, path);
+			errors.putAll(customerForm.getErrors());
+		}
+		
+		order.setCustomer(customer);
+		order.setDate(new DateTime());
+		
+		processAmount(amount, order);
+		processPaymentMethod(paymentMethod, order);
+		processPaymentStatus(paymentStatus, order);
+		processShippingMode(shippingMode, order);
+		processDeliveryStatus(deliveryStatus, order);
+		
+		if (errors.isEmpty())
+		{
+			try
 			{
 				orderDao.create(order);
 				result = "Order created successfully!";
 			}
-			else
+			catch (DAOException daoe)
 			{
-				result = "Order not created.";
+				result = "Order not created: something wrong happened while saving. Please try again later.";
+				daoe.printStackTrace();
 			}
 		}
-		catch (DAOException daoe)
+		else
 		{
-			result = "Order not created: something wrong happened while saving. Please try again later.";
-			daoe.printStackTrace();
+			result = "Order not created.";
 		}
 		
 		return order;
