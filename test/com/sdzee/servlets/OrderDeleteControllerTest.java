@@ -58,9 +58,17 @@ public class OrderDeleteControllerTest extends OrdersListControllerTestBase {
 	}
 	
 	@Test
+	public void testDeleteWrongFormatKey() {
+		
+		driver.get(BASE_URL + "deleteOrder?orderKey=WrongFormat");
+		
+		checkElement(coyoteOrderFromDb, coyoteOrder);
+	}
+	
+	@Test
 	public void testDeleteNonExistingKey() {
 		
-		driver.get(BASE_URL + "deleteOrder?orderKey=NonExisting");
+		driver.get(BASE_URL + "deleteOrder?orderKey=0");
 		
 		checkElement(coyoteOrderFromDb, coyoteOrder);
 	}

@@ -53,9 +53,17 @@ public class CustomerDeleteControllerTest extends CustomersListControllerTestBas
 	}
 	
 	@Test
+	public void testDeleteWrongFormatKey() {
+		
+		driver.get(BASE_URL + "deleteCustomer?customerKey=WrongFormat");
+		
+		checkElement(coyoteFromDb, coyote);
+	}
+	
+	@Test
 	public void testDeleteNonExistingKey() {
 		
-		driver.get(BASE_URL + "deleteCustomer?customerKey=NonExisting");
+		driver.get(BASE_URL + "deleteCustomer?customerKey=0");
 		
 		checkElement(coyoteFromDb, coyote);
 	}
