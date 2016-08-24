@@ -3,9 +3,10 @@ Why do we extend RuntimeException instead of Exception? Problem is that we are n
 Return a specific error when there is a DAOException while deleting customer/order
 When there is an error on amount field, display back the wrong content instead of 0.0
 Is it OK (disturbing message on page refresh) to display the same URL whether the form validation succeeds or not?
+Add missing (try/catch cases...) tests
 Use assertThat() instead of assertTrue() when possible
 Use import static when possible
-Limit Selenium dependency to testing scope
+Limit testing (JUnit, Selenium...) dependencies to testing scope
 Remove all unnecessary public-declared constants
 Rename order_date column to creation_date
 Remove "ON DELETE SET NULL" option on fk_customer_id and handle MySQLIntegrityConstraintViolationException

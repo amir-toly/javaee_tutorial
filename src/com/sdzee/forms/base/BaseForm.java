@@ -55,6 +55,15 @@ public abstract class BaseForm {
 		errors.put(fieldName, message);
 	}
 	
+	/**
+	 * Add the error {"unexpected": "Won't be displayed, but will prevent forwarding to result page."}
+	 * @see #setError(String, String)
+	 */
+	protected void setUnexpectedError() {
+		
+		setError("unexpected", "Won't be displayed, but will prevent forwarding to result page.");
+	}
+	
 	protected void validateTwoCharactersLongField(String fieldValue, String fieldLabel) throws FormValidationException {
 		
 		if (fieldValue == null || fieldValue.length() < 2)

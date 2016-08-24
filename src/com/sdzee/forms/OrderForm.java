@@ -106,6 +106,7 @@ public final class OrderForm extends BaseForm {
 			}
 			catch (DAOException daoe)
 			{
+				setUnexpectedError();
 				result = "Order not created: something wrong happened while saving. Please try again later.";
 				daoe.printStackTrace();
 			}

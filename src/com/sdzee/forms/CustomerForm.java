@@ -63,6 +63,7 @@ public final class CustomerForm extends BaseForm {
 			}
 			catch (DAOException daoe)
 			{
+				setUnexpectedError();
 				result = "Customer not created: something wrong happened while saving. Please try again later.";
 				daoe.printStackTrace();
 			}
